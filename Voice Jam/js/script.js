@@ -6,6 +6,8 @@ This is an interactive storytelling game of sorts.
 It is not interactive in the sense of "choose your adventure" type of narratives 
 but rather in sense that it is a collaboration with the program because it is pretty much treated 
 as a friend that helps you write funny and nonsensical stories.  
+
+The computer starts off the sentence which will then be finished by the user. 
 */
 
 "use strict";
