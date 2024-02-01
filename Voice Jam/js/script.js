@@ -1,16 +1,16 @@
 /**
-Voice Jam : Storytelling with my computer friend 
-Paria Jafarian, 40248494
+Voice Jam : Storytelling with the computer! 
+Paria Jafarian
 
 This is an interactive storytelling game of sorts. 
 It is not interactive in the sense of "choose your adventure" type of narratives 
 but rather in sense that it is a collaboration with the program because it is pretty much treated 
-as a friend that helps you write funny and nonsensical stories together.  
+as a friend that helps you write funny and nonsensical stories.  
 */
 
 "use strict";
 
-// an array of words that the program will use to begin the sentence
+// an array of words that the program will use to begin the sentence (need to add a lot more...)
 const wordsToUse = [
   "But then",
   "Suddenly", 
@@ -33,6 +33,8 @@ const speechRecognizer = new p5.SpeechRec();
 let currentStartingWords = '';
 let currentAnswer = '';
 
+// Declare an array to store the accumulated sentences
+let sentences = [];
 
 /**
 Description of preload
@@ -57,8 +59,8 @@ function setup() {
   // Start it
   speechRecognizer.start();
 
-  // Text defaults
-  textSize(35);
+  // Text properties
+  textSize(30);
   textStyle(BOLD);
   textAlign(CENTER);
 }
@@ -70,33 +72,31 @@ Description of draw()
 function draw() {
   background(230,10,30);
 
-  // Combine currentStartingWords and currentAnswer into a single sentence
-  let fullSentence = currentStartingWords + " " + currentAnswer;
-
-  // Display the combined sentence on the canvas
-  text(fullSentence, width / 2, height / 2);
+  // Display accumulated sentences as a paragraph
+  for (let i = 0; i < sentences.length; i++) {
+    text(sentences[i], width / 2, height / 2 + i * 40); // Adjust spacing
+  }
 }
 
 
 
 function handleSpeechInput(){
   // Set a default that works if we don't get a useful input
-  let guessedAnswer = 'what??'; 
+  let answerConfusion = 'what??'; 
   // Make sure there is a result
   if (speechRecognizer.resultValue) {
-    // We're going to use split() to break what the user said into two parts
-    // The part *before* they say "Start writing" and the part *after* they say it
-    // The *after* part should be what they want to write...
+    // Using split() to break what the user said into two parts
+    // The part before they say "Start writing" and the part after they say it
+    // The after part is the continuation of the sentence.
     let toLowerCaseResult = speechRecognizer.resultString.toLowerCase();
     let parts = toLowerCaseResult.split('start writing');
     if (parts.length > 1) {
-      guessedAnswer = parts[1];
+      answerConfusion = parts[1];
     }
   } 
-    // Convert the guess to lowercase to match the answer format
-    currentAnswer = guessedAnswer;
+    // Convert to lowercase 
+    currentAnswer = answerConfusion;
     console.log(currentAnswer);
-
 } 
 
 function nextSentence(){
@@ -106,12 +106,10 @@ function nextSentence(){
   let result = currentStartingWords.toString();
   // Return that result in the form of speech
   speechSynthesizer.speak(result); 
-  
+  // Add the combined sentence to the array
+  sentences.push(currentStartingWords + currentAnswer);
 }
 
 function mousePressed(){
   nextSentence();
-  
-  // Add the combined sentence to the array
-  sentences.push(currentStartingWords + " " + currentAnswer);
 }
