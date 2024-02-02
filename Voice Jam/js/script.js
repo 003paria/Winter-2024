@@ -24,6 +24,9 @@ const wordsToUse = [
   "It's hard to",
   "Truly amazing", 
   "Why did it",
+  "Once upon a time",
+  "The sky",
+  "The pigeons"
 ]
 
 // The speech synthesizer
@@ -74,42 +77,53 @@ Description of draw()
 function draw() {
   background(230,10,30);
 
+
   // Display accumulated sentences as a paragraph
   for (let i = 0; i < sentences.length; i++) {
     text(sentences[i], width / 2, height / 2 + i * 40); // Adjust spacing
   }
+
 }
 
 
 
 function handleSpeechInput(){
-  // Set a default that works if we don't get a useful input
-  let answerConfusion = 'what??'; 
+  let parts = '';
   // Make sure there is a result
   if (speechRecognizer.resultValue) {
     // Using split() to break what the user said into two parts
     // The part before they say "Start writing" and the part after they say it
     // The after part is the continuation of the sentence.
     let toLowerCaseResult = speechRecognizer.resultString.toLowerCase();
-    let parts = toLowerCaseResult.split('start writing');
+    parts = toLowerCaseResult.split('start writing');
+
     if (parts.length > 1) {
-      answerConfusion = parts[1];
+      currentAnswer = parts[1];
+    } 
+    
+    if (currentAnswer.includes('stop')){
+      // Extract the portion of the answer before the "stop" command
+      let refinedAnswer = currentAnswer.substring(0, currentAnswer.indexOf('stop')).trim();
+      // Construct the full sentence using the starting words and the truncated answer
+      let fullsentence = currentStartingWords.trim() + " " + refinedAnswer;
+      sentences.push(fullsentence);
     }
   } 
     // Convert to lowercase 
-    currentAnswer = answerConfusion;
     console.log(currentAnswer);
 } 
 
+  
+
+
 function nextSentence(){
+  currentAnswer = '';
   // A random string from the array of "words to use" is assigned to the current one 
   currentStartingWords = random(wordsToUse);
   // Trun that random string into a string! 
   let result = currentStartingWords.toString();
   // Return that result in the form of speech
   speechSynthesizer.speak(result); 
-  // Add the combined sentence to the array
-  sentences.push(currentStartingWords + currentAnswer);
 }
 
 function mousePressed(){
