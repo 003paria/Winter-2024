@@ -26,18 +26,52 @@ const wordsToUse = [
   "Why did it",
   "Once upon a time",
   "The sky",
-  "The pigeons"
+  "The pigeons",
+  "Happily ever after",
+  "With great anticipation",
+  "In utter disbelief",
+  "With a heavy heart",
+  "Eagerly awaiting",
+  "Joyously celebrating",
+  "Running wild",
+  "Exploring new worlds",
+  "Dancing in the moonlight",
+  "Fighting against odds",
+  "Climbing mountains",
+  "Sailing across oceans",
+  "In the shadows",
+  "Whispers in the night",
+  "Lost in a labyrinth",
+  "Searching for clues",
+  "Hidden treasures",
+  "A secret passage", 
+  "Beneath the trees",
+  "Amidst the flowers",
+  "Underneath the stars",
+  "By the riverside",
+  "In the heart of the forest",
+  "On the mountaintop",
+  "In a land far, far away",
+  "Amongst magical creatures",
+  "Spellbound by enchantment",
+  "In the realm of dreams",
+  "Wandering through portals", 
+  "With a twist of fate",
+  "Out of the blue",
+  "In a parallel universe",
+  "Through the rabbit hole",
+  "In a world of nonsense",
+  "Beyond the ordinary", 
+  "Echoes of the past"
 ]
-
-// The speech synthesizer
-const speechSynthesizer = new p5.Speech();
-// The speech recognizer
-const speechRecognizer = new p5.SpeechRec();
+const speechSynthesizer = new p5.Speech(); // The speech synthesizer
+const speechRecognizer = new p5.SpeechRec(); // The speech recognizer
 
 // The current words that will start off the sentence
 let currentStartingWords = '';
 let currentAnswer = '';
-
+// Flag to track if a story is being read
+let storyBeingRead = false;
 // Declare an array to store the accumulated sentences
 let sentences = [];
 
@@ -61,8 +95,6 @@ function setup() {
   speechRecognizer.continuous = true;
   // Tell it the function to call on a result
   speechRecognizer.onResult = handleSpeechInput;
-  // Start it
-  speechRecognizer.start();
 
   // Text properties
   textSize(30);
@@ -82,13 +114,12 @@ function draw() {
   for (let i = 0; i < sentences.length; i++) {
     text(sentences[i], width / 2, height / 2 + i * 40); // Adjust spacing
   }
-
 }
 
 
 
 function handleSpeechInput(){
-  let parts = '';
+  let parts = '?';
   // Make sure there is a result
   if (speechRecognizer.resultValue) {
     // Using split() to break what the user said into two parts
@@ -107,14 +138,36 @@ function handleSpeechInput(){
       // Construct the full sentence using the starting words and the truncated answer
       let fullsentence = currentStartingWords.trim() + " " + refinedAnswer;
       sentences.push(fullsentence);
+
+      speechRecognizer.stop(); // Stop the speech recognizer
+    }
+
+    // Check if the user said "story over"
+    if (currentAnswer.includes('story over')) {
+      // Extract the portion of the answer before the "stop" command
+      let cleanedAnswer = currentAnswer.substring(0, currentAnswer.indexOf('story over')).trim();
+      // Construct the full sentence using the starting words and the truncated answer
+      let fullsentence = currentStartingWords.trim() + " " + cleanedAnswer;
+      sentences.push(fullsentence);
+
+      readStory(); // Call the function to read out the entire story
     }
   } 
-    // Convert to lowercase 
+    
     console.log(currentAnswer);
 } 
 
-  
-
+// Function to read out the entire story
+function readStory() {
+  // Concatenate all sentences into a single string
+  let fullStory = sentences.join('. ');
+  // Read out the full story
+  speechSynthesizer.speak(fullStory);
+  // Stop the speech recognizer
+  speechRecognizer.stop();
+  // Set the flag to true to indicate that a story is being read
+  storyBeingRead = true;
+}  
 
 function nextSentence(){
   currentAnswer = '';
@@ -126,6 +179,11 @@ function nextSentence(){
   speechSynthesizer.speak(result); 
 }
 
-function mousePressed(){
-  nextSentence();
+// When the user clicks, go to the next sentence 
+function mousePressed() {
+  if (!storyBeingRead) {
+    nextSentence();
+    // Restart the speech recognizer
+    speechRecognizer.start();
+  }
 }
