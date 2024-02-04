@@ -70,6 +70,8 @@ const speechRecognizer = new p5.SpeechRec(); // The speech recognizer
 // The current words that will start off the sentence
 let currentStartingWords = '';
 let currentAnswer = '';
+let voiceDropdown, label, rslider, pslider; // UI
+
 // Flag to track if a story is being read
 let storyBeingRead = false;
 // Declare an array to store the accumulated sentences
@@ -91,16 +93,42 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
 
   // Set up the recognizer
-  // Make it listen continuously. 
-  speechRecognizer.continuous = true;
-  // Tell it the function to call on a result
-  speechRecognizer.onResult = handleSpeechInput;
+  speechRecognizer.continuous = true; // Make it listen continuously. 
+  speechRecognizer.onResult = handleSpeechInput;  // Tell it the function to call on a result
 
   // Text properties
   textSize(30);
   textStyle(BOLD);
   textAlign(CENTER);
+
+  // sliders:
+  rslider = createSlider(10., 200., 100.);
+  rslider.position(20, 60);
+  rslider.mouseReleased(setRate);
+  pslider = createSlider(1., 200., 100.);
+  pslider.position(20, 80);
+  pslider.mouseReleased(setPitch);
+
+  //Labels 
+  label = createDiv("rate");
+	label.position(160, 60);
+	label = createDiv("pitch");
+	label.position(160, 80);
+
+  // Set up the voice selection dropdown
+  voiceDropdown = createSelect();
+  voiceDropdown.position(20, 20); 
+
+  // Populate the dropdown with available voices
+  let voices = speechSynthesizer.voices;
+  for (let i = 0; i < voices.length; i++) {
+      voiceDropdown.option(voices[i].name);
+  }
+
+  // Event listener for voice selection
+  voiceDropdown.changed = updateVoice;
 }
+
 
 
 /**
@@ -109,14 +137,23 @@ Description of draw()
 function draw() {
   background(230,10,30);
 
-
   // Display accumulated sentences as a paragraph
   for (let i = 0; i < sentences.length; i++) {
     text(sentences[i], width / 2, height / 2 + i * 40); // Adjust spacing
   }
 }
 
-
+// Function to update the selected voice
+function updateVoice() {
+  let voiceName = voiceDropdown.value();
+  let voices = speechSynthesizer.voices;
+  for (let i = 0; i < voices.length; i++) {
+      if (voices[i].name === voiceName) {
+          speechSynthesizer.setVoice(voices[i]);
+          break;
+      }
+  }
+} 
 
 function handleSpeechInput(){
   let parts = '?';
@@ -157,6 +194,15 @@ function handleSpeechInput(){
     console.log(currentAnswer);
 } 
 
+function setRate()
+	{
+		myVoice.setRate(rslider.value()/100.);
+	}
+	function setPitch()
+	{
+		myVoice.setPitch(pslider.value()/100.);
+	}
+
 // Function to read out the entire story
 function readStory() {
   // Concatenate all sentences into a single string
@@ -180,8 +226,8 @@ function nextSentence(){
 }
 
 // When the user clicks, go to the next sentence 
-function mousePressed() {
-  if (!storyBeingRead) {
+function keyPressed() {
+  if (keyCode === ENTER && !storyBeingRead) {
     nextSentence();
     // Restart the speech recognizer
     speechRecognizer.start();
