@@ -95,7 +95,7 @@ function setup() {
   // Set up the recognizer
   speechRecognizer.continuous = true; // Make it listen continuously. 
   speechRecognizer.onResult = handleSpeechInput;  // Tell it the function to call on a result
-
+  
   // Text properties
   textSize(30);
   textStyle(BOLD);
@@ -124,9 +124,8 @@ function setup() {
   for (let i = 0; i < voices.length; i++) {
       voiceDropdown.option(voices[i].name);
   }
-
   // Event listener for voice selection
-  voiceDropdown.changed = updateVoice;
+  voiceDropdown.changed(updateVoice); 
 }
 
 
@@ -134,7 +133,7 @@ function setup() {
 /**
 Description of draw()
 */
-function draw() {
+function draw(){
   background(230,10,30);
 
   // Display accumulated sentences as a paragraph
@@ -149,11 +148,12 @@ function updateVoice() {
   let voices = speechSynthesizer.voices;
   for (let i = 0; i < voices.length; i++) {
       if (voices[i].name === voiceName) {
-          speechSynthesizer.setVoice(voices[i]);
+          speechSynthesizer.setVoice(voiceName);
           break;
       }
   }
-} 
+  console.log(voiceName);
+}
 
 function handleSpeechInput(){
   let parts = '?';
@@ -194,17 +194,15 @@ function handleSpeechInput(){
     console.log(currentAnswer);
 } 
 
-function setRate()
-	{
-		myVoice.setRate(rslider.value()/100.);
+function setRate(){
+  speechSynthesizer.setRate(rslider.value()/100.);
 	}
-	function setPitch()
-	{
-		myVoice.setPitch(pslider.value()/100.);
+function setPitch(){
+  speechSynthesizer.setPitch(pslider.value()/100.);
 	}
 
 // Function to read out the entire story
-function readStory() {
+function readStory(){
   // Concatenate all sentences into a single string
   let fullStory = sentences.join('. ');
   // Read out the full story
