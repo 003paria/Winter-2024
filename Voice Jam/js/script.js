@@ -12,6 +12,7 @@ The computer starts off the sentence which will then be finished by the user.
 
 "use strict";
 
+
 // an array of words that the program will use to begin the sentence (need to add a lot more...)
 const wordsToUse = [
   "But then",
@@ -71,9 +72,20 @@ const speechRecognizer = new p5.SpeechRec(); // The speech recognizer
 let currentStartingWords = '';
 let currentAnswer = '';
 let voiceDropdown, label, rslider, pslider; // UI
+let instructions = `Let's write a story together!
 
-// Flag to track if a story is being read
-let storyBeingRead = false;
+I will start off the sentence every time you press the Space key, and you'll finish it by talking out loud.
+But in order for me to understand you, you must begin your sentence by saying "start writing" aloud and you must always end your sentence by saying "stop".
+If the sentence is not displayed after you said "stop", it means that I did not hear you properly so you need to repeat yourself again.
+Whenever you feel like you're happy with the story, instead of ending the story with the usual "stop", you must end your last sentence with "story over".
+You can have fun between your sentences by playing around with the different accents available as well as with setting the rate and the pitch!
+
+Press the Enter key to start the game.`;
+
+
+let instructionsVisible = true; // Flag to track if instructions are visible
+let storyBeingRead = false; // Flag to track if a story is being read
+
 // Declare an array to store the accumulated sentences
 let sentences = [];
 
@@ -91,15 +103,18 @@ Description of setup
 function setup() {
   // Set the canvas size to match the window dimensions
   createCanvas(windowWidth, windowHeight);
+  rectMode(CENTER); // Set rectangle mode to draw from the center
 
   // Set up the recognizer
   speechRecognizer.continuous = true; // Make it listen continuously. 
   speechRecognizer.onResult = handleSpeechInput;  // Tell it the function to call on a result
   
   // Text properties
+  push();
   textSize(30);
   textStyle(BOLD);
   textAlign(CENTER);
+  pop();
 
   // sliders:
   rslider = createSlider(10., 200., 100.);
@@ -134,7 +149,33 @@ function setup() {
 Description of draw()
 */
 function draw(){
+
   background(230,10,30);
+
+  // Display the instructions only if they are visible
+  if (instructionsVisible) {
+  // Draw instructions rectangle
+  let instructionsWidth = min(700, width - 40); // Adjust maximum width
+  let instructionsHeight = min(500, height - 40); // Adjust maximum height
+  let instructionsX = width / 2;
+  let instructionsY = height / 2;
+
+  fill(255);
+  rect(instructionsX, instructionsY, instructionsWidth, instructionsHeight, 10);
+
+  // Text styling
+  textAlign(CENTER);
+  textStyle(BOLD);
+  textSize(20);
+  fill(0);
+
+  // Draw instructions text
+  let textX = instructionsX;
+  let textY = instructionsY;
+
+  // Draw text within the rectangle with maxWidth and maxHeight
+  text(instructions, textX, textY, instructionsWidth - 40, instructionsHeight - 40);
+}
 
   // Display accumulated sentences as a paragraph
   for (let i = 0; i < sentences.length; i++) {
@@ -225,7 +266,11 @@ function nextSentence(){
 
 // When the user clicks, go to the next sentence 
 function keyPressed() {
-  if (keyCode === ENTER && !storyBeingRead) {
+  if (keyCode === ENTER && instructionsVisible) {
+    instructionsVisible = false; // Hide instructions when Enter key is pressed
+  }
+
+  if (keyCode === 32 && !storyBeingRead) {
     nextSentence();
     // Restart the speech recognizer
     speechRecognizer.start();
