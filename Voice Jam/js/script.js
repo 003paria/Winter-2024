@@ -79,33 +79,30 @@ You can have fun between your sentences by playing around with the different acc
 Press the Enter key to start the game.`;
 let instructionsVisible = true; // Flag to track if instructions are visible
 let storyBeingRead = false; // Flag to track if a story is being read
-let sentences = [];// Declare an array to store the accumulated sentences
+let sentences = []; // Array to store the accumulated sentences
 
-/**
-Description of preload
-*/
+// Background image is preloaded
 function preload() {
   backgroundImage = loadImage('assets/images/sky-7232494_1920.jpg');
 }
-
 /**
-Description of setup
+The setup is mostly for UI stuff (the sliders and the voice dropdown) 
+but it also sets up the speech recognizer. 
 */
 function setup() {
   // Set the canvas size to match the window dimensions
   createCanvas(1920, 1440);
-  rectMode(CENTER); // Set rectangle mode to draw from the center
+  // Set rectangle mode to draw from the center
+  rectMode(CENTER); 
   // Set up the recognizer
-  speechRecognizer.continuous = true; // Make it listen continuously. 
+  speechRecognizer.continuous = true; // Make it listen continuously
   speechRecognizer.onResult = handleSpeechInput;  // Tell it the function to call on a result
-
   // Text properties
   push();
   textSize(30);
   textStyle(BOLD);
   textAlign(CENTER);
   pop();
-
   // sliders:
   rslider = createSlider(10., 200., 100.);
   rslider.position(20, 60);
@@ -113,17 +110,14 @@ function setup() {
   pslider = createSlider(1., 200., 100.);
   pslider.position(20, 80);
   pslider.mouseReleased(setPitch);
-
   //Labels 
   label = createDiv("rate");
 	label.position(160, 60);
 	label = createDiv("pitch");
 	label.position(160, 80);
-
   // Set up the voice selection dropdown
   voiceDropdown = createSelect();
   voiceDropdown.position(20, 20); 
-
   // Show available voices
   let voices = speechSynthesizer.voices;
   for (let i = 0; i < voices.length; i++) {
@@ -133,26 +127,25 @@ function setup() {
   voiceDropdown.changed(updateVoice); 
 }
 /**
-Description of draw()
+Makes sure that if we are at the beginning of the program, the instructions are displayed properely 
+It also uses a loops to display the sentences one after another (like a coherent paragraph).
 */
 function draw(){
   background(backgroundImage);
   // Display the instructions only if they are visible
   if (instructionsVisible) {
   // Draw instructions rectangle
-  let instructionsWidth = min(700, width - 40); // Adjust maximum width
-  let instructionsHeight = min(500, height - 40); // Adjust maximum height
+  let instructionsWidth = min(700, width - 40); 
+  let instructionsHeight = min(500, height - 40);
   let instructionsX = width / 2;
   let instructionsY = height / 2;
   fill(255, 120);
   rect(instructionsX, instructionsY, instructionsWidth, instructionsHeight, 10);
-  
   // Text styling
   textAlign(CENTER);
   textStyle(BOLD);
   textSize(20);
   fill(0);
-
   // Draw instructions text
   let textX = instructionsX;
   let textY = instructionsY;
@@ -161,7 +154,7 @@ function draw(){
 }
   // Display accumulated sentences as a paragraph
   for (let i = 0; i < sentences.length; i++) {
-    text(sentences[i], width / 2, height / 2 + i * 40); // Adjust spacing
+    text(sentences[i], width / 2, height / 2 + i * 40);
   }
 }
 // Function to update the selected voice
@@ -176,6 +169,7 @@ function updateVoice() {
   }
   console.log(voiceName);
 }
+// Function that handles the speech input based on certain keywords that the user says
 function handleSpeechInput(){
   let parts = '?';
   // Make sure there is a result
@@ -191,10 +185,11 @@ function handleSpeechInput(){
     if (currentAnswer.includes('stop')){
       // Extract the portion of the answer before the "stop" command
       let refinedAnswer = currentAnswer.substring(0, currentAnswer.indexOf('stop')).trim();
-      // Construct the full sentence using the starting words and the truncated answer
+      // Construct the full sentence using the starting words and the "refined" answer
       let fullsentence = currentStartingWords.trim() + " " + refinedAnswer;
       sentences.push(fullsentence);
-      speechRecognizer.stop(); // Stop the speech recognizer
+      // Stop the speech recognizer so that it does not keep listening
+      speechRecognizer.stop(); 
     }
     // Check if the user said "story over"
     if (currentAnswer.includes('story over')) {
@@ -203,22 +198,23 @@ function handleSpeechInput(){
       // Construct the full sentence using the starting words and the  "cleaned" answer
       let fullsentence = currentStartingWords.trim() + " " + cleanedAnswer;
       sentences.push(fullsentence);
-      readStory(); // Call the function to read out the entire story
+      // Call the function to read out the entire story
+      readStory(); 
     }
   } 
   console.log(currentAnswer);
 } 
+// function that adjusts the rate of the speech synthesis
 function setRate() {
-  // Adjust the range to [-2, 2] for rate
   let rate = map(rslider.value(), 0, 100, -2, 2);
   speechSynthesizer.setRate(rate);
 }
-function setPitch() {
-  // Adjust the range to [0, 2] for pitch
+ // function that adjusts the pitch of the speech synthesis
+ function setPitch() {
   let pitch = map(pslider.value(), 0, 100, 0, 2);
   speechSynthesizer.setPitch(pitch);
 }
-// Function to read out the entire story
+// Function to read the entire story
 function readStory(){
   // Concatenate all sentences into a single string
   let fullStory = sentences.join('. ');
@@ -229,6 +225,7 @@ function readStory(){
   // Set the flag to true to indicate that a story is being read
   storyBeingRead = true;
 }  
+// Function to start a new sentence 
 function nextSentence(){
   currentAnswer = '';
   // A random string from the array of "words to use" is assigned to the current one 
@@ -238,7 +235,7 @@ function nextSentence(){
   // Return that result in the form of speech
   speechSynthesizer.speak(result); 
 }
-// When the user presses ENTER and SPACE 
+// function for when the user presses ENTER and SPACE 
 function keyPressed() {
   if (keyCode === ENTER && instructionsVisible) {
     instructionsVisible = false; // Hide instructions when Enter key is pressed
