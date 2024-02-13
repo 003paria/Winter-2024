@@ -11,8 +11,6 @@ The computer starts off the sentence which will then be finished by the user.
 */
 
 "use strict";
-
-
 // an array of words that the program will use to begin the sentence
 const wordsToUse = [
   "But then",
@@ -67,12 +65,12 @@ const wordsToUse = [
 ]
 const speechSynthesizer = new p5.Speech(); // The speech synthesizer
 const speechRecognizer = new p5.SpeechRec(); // The speech recognizer
+let backgroundImage, voiceDropdown, label, rslider, pslider; // UI
 let currentStartingWords = '';
 let currentAnswer = '';
-let voiceDropdown, label, rslider, pslider; // UI
 let instructions = `Let's write a story together!
 
-I will start off the sentence every time you press the Space key, and you'll finish it by talking out loud.
+I will start off the sentence every time you press the Space key, and you'll finish it by talking out loud. 
 But in order for me to understand you, you must begin your sentence by saying "start writing" aloud and you must always end your sentence by saying "stop".
 If the sentence is not displayed after you said "stop", it means that I did not hear you properly so you need to repeat yourself again.
 Whenever you feel like you're happy with the story, instead of ending the story with the usual "stop", you must end your last sentence with "story over".
@@ -87,7 +85,7 @@ let sentences = [];// Declare an array to store the accumulated sentences
 Description of preload
 */
 function preload() {
-
+  backgroundImage = loadImage('assets/images/sky-7232494_1920.jpg');
 }
 
 /**
@@ -95,12 +93,12 @@ Description of setup
 */
 function setup() {
   // Set the canvas size to match the window dimensions
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(1920, 1440);
   rectMode(CENTER); // Set rectangle mode to draw from the center
   // Set up the recognizer
   speechRecognizer.continuous = true; // Make it listen continuously. 
   speechRecognizer.onResult = handleSpeechInput;  // Tell it the function to call on a result
-  
+
   // Text properties
   push();
   textSize(30);
@@ -138,7 +136,7 @@ function setup() {
 Description of draw()
 */
 function draw(){
-  background(230,10,30);
+  background(backgroundImage);
   // Display the instructions only if they are visible
   if (instructionsVisible) {
   // Draw instructions rectangle
@@ -146,13 +144,15 @@ function draw(){
   let instructionsHeight = min(500, height - 40); // Adjust maximum height
   let instructionsX = width / 2;
   let instructionsY = height / 2;
-  fill(255);
+  fill(255, 120);
   rect(instructionsX, instructionsY, instructionsWidth, instructionsHeight, 10);
+  
   // Text styling
   textAlign(CENTER);
   textStyle(BOLD);
   textSize(20);
   fill(0);
+
   // Draw instructions text
   let textX = instructionsX;
   let textY = instructionsY;
@@ -243,7 +243,7 @@ function keyPressed() {
   if (keyCode === ENTER && instructionsVisible) {
     instructionsVisible = false; // Hide instructions when Enter key is pressed
   }
-  if (keyCode === 32 && !storyBeingRead) {
+  if (keyCode === 32 && !storyBeingRead && !instructionsVisible) {
     nextSentence();
     // Restart the speech recognizer
     speechRecognizer.start();
