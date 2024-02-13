@@ -13,7 +13,7 @@ The computer starts off the sentence which will then be finished by the user.
 "use strict";
 
 
-// an array of words that the program will use to begin the sentence (need to add a lot more...)
+// an array of words that the program will use to begin the sentence
 const wordsToUse = [
   "But then",
   "Suddenly", 
@@ -67,8 +67,6 @@ const wordsToUse = [
 ]
 const speechSynthesizer = new p5.Speech(); // The speech synthesizer
 const speechRecognizer = new p5.SpeechRec(); // The speech recognizer
-
-// The current words that will start off the sentence
 let currentStartingWords = '';
 let currentAnswer = '';
 let voiceDropdown, label, rslider, pslider; // UI
@@ -81,13 +79,9 @@ Whenever you feel like you're happy with the story, instead of ending the story 
 You can have fun between your sentences by playing around with the different accents available as well as with setting the rate and the pitch!
 
 Press the Enter key to start the game.`;
-
-
 let instructionsVisible = true; // Flag to track if instructions are visible
 let storyBeingRead = false; // Flag to track if a story is being read
-
-// Declare an array to store the accumulated sentences
-let sentences = [];
+let sentences = [];// Declare an array to store the accumulated sentences
 
 /**
 Description of preload
@@ -96,7 +90,6 @@ function preload() {
 
 }
 
-
 /**
 Description of setup
 */
@@ -104,7 +97,6 @@ function setup() {
   // Set the canvas size to match the window dimensions
   createCanvas(windowWidth, windowHeight);
   rectMode(CENTER); // Set rectangle mode to draw from the center
-
   // Set up the recognizer
   speechRecognizer.continuous = true; // Make it listen continuously. 
   speechRecognizer.onResult = handleSpeechInput;  // Tell it the function to call on a result
@@ -134,7 +126,7 @@ function setup() {
   voiceDropdown = createSelect();
   voiceDropdown.position(20, 20); 
 
-  // Populate the dropdown with available voices
+  // Show available voices
   let voices = speechSynthesizer.voices;
   for (let i = 0; i < voices.length; i++) {
       voiceDropdown.option(voices[i].name);
@@ -142,16 +134,11 @@ function setup() {
   // Event listener for voice selection
   voiceDropdown.changed(updateVoice); 
 }
-
-
-
 /**
 Description of draw()
 */
 function draw(){
-
   background(230,10,30);
-
   // Display the instructions only if they are visible
   if (instructionsVisible) {
   // Draw instructions rectangle
@@ -159,30 +146,24 @@ function draw(){
   let instructionsHeight = min(500, height - 40); // Adjust maximum height
   let instructionsX = width / 2;
   let instructionsY = height / 2;
-
   fill(255);
   rect(instructionsX, instructionsY, instructionsWidth, instructionsHeight, 10);
-
   // Text styling
   textAlign(CENTER);
   textStyle(BOLD);
   textSize(20);
   fill(0);
-
   // Draw instructions text
   let textX = instructionsX;
   let textY = instructionsY;
-
   // Draw text within the rectangle with maxWidth and maxHeight
   text(instructions, textX, textY, instructionsWidth - 40, instructionsHeight - 40);
 }
-
   // Display accumulated sentences as a paragraph
   for (let i = 0; i < sentences.length; i++) {
     text(sentences[i], width / 2, height / 2 + i * 40); // Adjust spacing
   }
 }
-
 // Function to update the selected voice
 function updateVoice() {
   let voiceName = voiceDropdown.value();
@@ -195,7 +176,6 @@ function updateVoice() {
   }
   console.log(voiceName);
 }
-
 function handleSpeechInput(){
   let parts = '?';
   // Make sure there is a result
@@ -205,43 +185,39 @@ function handleSpeechInput(){
     // The after part is the continuation of the sentence.
     let toLowerCaseResult = speechRecognizer.resultString.toLowerCase();
     parts = toLowerCaseResult.split('start writing');
-
     if (parts.length > 1) {
       currentAnswer = parts[1];
     } 
-    
     if (currentAnswer.includes('stop')){
       // Extract the portion of the answer before the "stop" command
       let refinedAnswer = currentAnswer.substring(0, currentAnswer.indexOf('stop')).trim();
       // Construct the full sentence using the starting words and the truncated answer
       let fullsentence = currentStartingWords.trim() + " " + refinedAnswer;
       sentences.push(fullsentence);
-
       speechRecognizer.stop(); // Stop the speech recognizer
     }
-
     // Check if the user said "story over"
     if (currentAnswer.includes('story over')) {
-      // Extract the portion of the answer before the "stop" command
+      // Extract the portion of the answer before the "story over" command
       let cleanedAnswer = currentAnswer.substring(0, currentAnswer.indexOf('story over')).trim();
-      // Construct the full sentence using the starting words and the truncated answer
+      // Construct the full sentence using the starting words and the  "cleaned" answer
       let fullsentence = currentStartingWords.trim() + " " + cleanedAnswer;
       sentences.push(fullsentence);
-
       readStory(); // Call the function to read out the entire story
     }
   } 
-    
-    console.log(currentAnswer);
+  console.log(currentAnswer);
 } 
-
-function setRate(){
-  speechSynthesizer.setRate(rslider.value()/100.);
-	}
-function setPitch(){
-  speechSynthesizer.setPitch(pslider.value()/100.);
-	}
-
+function setRate() {
+  // Adjust the range to [-2, 2] for rate
+  let rate = map(rslider.value(), 0, 100, -2, 2);
+  speechSynthesizer.setRate(rate);
+}
+function setPitch() {
+  // Adjust the range to [0, 2] for pitch
+  let pitch = map(pslider.value(), 0, 100, 0, 2);
+  speechSynthesizer.setPitch(pitch);
+}
 // Function to read out the entire story
 function readStory(){
   // Concatenate all sentences into a single string
@@ -253,7 +229,6 @@ function readStory(){
   // Set the flag to true to indicate that a story is being read
   storyBeingRead = true;
 }  
-
 function nextSentence(){
   currentAnswer = '';
   // A random string from the array of "words to use" is assigned to the current one 
@@ -263,13 +238,11 @@ function nextSentence(){
   // Return that result in the form of speech
   speechSynthesizer.speak(result); 
 }
-
-// When the user clicks, go to the next sentence 
+// When the user presses ENTER and SPACE 
 function keyPressed() {
   if (keyCode === ENTER && instructionsVisible) {
     instructionsVisible = false; // Hide instructions when Enter key is pressed
   }
-
   if (keyCode === 32 && !storyBeingRead) {
     nextSentence();
     // Restart the speech recognizer
