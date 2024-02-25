@@ -128,31 +128,38 @@ function intro(){
 function list(){
   background(backgroundList);
 }
-function simulation(){
+function simulation() {
   background(backgroundSimulation);
 
-    // Check if there currently predictions to display
-    if (predictions.length > 0) {
-      // If yes, then get the positions of the tip and base of the index finger
-      updateIndexCircle(predictions[0]);
+  // Check if there are currently predictions to display
+  if (predictions.length > 0) {
+    // If yes, then get the positions of the tip and base of the index finger
+    updateIndexCircle(predictions[0]);
 
-  //   for (i=0; i < item.length; i++){
-  //   // Check if index finger is touching one of the items in the item array 
-  //   let d = dist(indexCircle.x, indexCircle.y, item[i].x, item[i].y);
-  //   if (d < bubble.size / 2) {
-  //   // draw a green circle
-  //   push();
-  //   fill(0, 255, 0);
-  //   noStroke();
-  //   ellipse(item[i].x, item[i].y, indexCircle.size);
-  //   pop();
-  //   }
-  // }   
-  
-  // Display the current position of the index  
-   displayIndex();
- }
+    // Loop through each item in the item array
+    for (let i = 0; i < item.length; i++) {
+      // Calculate the distance between the item and the index circle
+      let d = dist(indexCircle.x, indexCircle.y, item[i].x, item[i].y);
+
+      // Set an acceptable distance threshold
+      let acceptableDistance = indexCircle.size / 2;
+
+      // Check if the distance is within the acceptable threshold
+      if (d < acceptableDistance) {
+        // Draw a green circle around the item
+        push();
+        fill(0, 255, 0);
+        noStroke();
+        ellipse(item[i].x, item[i].y, indexCircle.size);
+        pop();
+      }
+    }
+
+    // Display the current position of the index
+    displayIndex();
+  }
 }
+
 
 function win(){
   background(0,250,0);
