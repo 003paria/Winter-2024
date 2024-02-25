@@ -136,20 +136,21 @@ function simulation(){
       // If yes, then get the positions of the tip and base of the index finger
       updateIndexCircle(predictions[0]);
 
-    for (i=0; i < item.length; i++){
-    // Check if index finger is touching one of the items in the item array 
-    let d = dist(indexCircle.x, indexCircle.y, item[i].x, item[i].y);
-    if (d < bubble.size / 2) {
-    // draw a green circle
-    push();
-    fill(0, 255, 0);
-    noStroke();
-    ellipse(item[i].x, item[i].y, indexCircle.size);
-    pop();
-    }
-   // Display the current position of the index  
+  //   for (i=0; i < item.length; i++){
+  //   // Check if index finger is touching one of the items in the item array 
+  //   let d = dist(indexCircle.x, indexCircle.y, item[i].x, item[i].y);
+  //   if (d < bubble.size / 2) {
+  //   // draw a green circle
+  //   push();
+  //   fill(0, 255, 0);
+  //   noStroke();
+  //   ellipse(item[i].x, item[i].y, indexCircle.size);
+  //   pop();
+  //   }
+  // }   
+  
+  // Display the current position of the index  
    displayIndex();
-  }
  }
 }
 
