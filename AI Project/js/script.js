@@ -108,7 +108,12 @@ function list(){
 }
 function simulation(){
   background(backgroundSimulation);
-  displayMouseCoordinates();
+
+    // Check if there currently predictions to display
+    if (predictions.length > 0) {
+      // If yes, then get the positions of the tip and base of the index finger
+      updateIndexCircle(predictions[0]);
+  }
 }
 function win(){
   background(0,250,0);
@@ -121,6 +126,12 @@ function handleHandDetection(results) {
     predictions = results;
   }
 
+
+
+function updateIndexCircle(prediction){
+  indexCircle.x = prediction.annotations.indexFinger[3][0];
+  indexCircle.y = prediction.annotations.indexFinger[3][1];
+}
 // function for when the user presses ENTER and SPACE 
 function keyPressed() {    
   // if we are in intro then move on to the list, else go to the simulation
