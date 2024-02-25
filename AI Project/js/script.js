@@ -12,6 +12,23 @@ let backgroundImage;
 let backgroundList; 
 let backgroundSimulation; 
 
+// User's webcam
+let video;
+// The name of our model
+let modelName = `Handpose`;
+// Handpose object (using the name of the model for clarity)
+let handpose;
+// The current set of predictions made by Handpose once it's running
+let predictions = [];
+// The item we are trying to find 
+let item; 
+// The indextracker 
+let indexCircle = {
+  x : undefined,
+  y : undefined,
+  size : 20
+};
+
 //State stuff 
 const STATE = {
   INTRO: 'INTRO',
@@ -20,6 +37,8 @@ const STATE = {
   WIN: 'WIN',
   LOSE: 'LOSE'
 };
+
+//Current state of the program 
 let state = 'INTRO';
 
 /**
@@ -112,7 +131,7 @@ function displayMouseCoordinates() {
   
   // Set text style
   textSize(16);
-  fill(0);
+  fill(0);  
   
   // Display coordinates at (20, 20)
   text("MouseX: " + mouseXPosition, 20, 20);
