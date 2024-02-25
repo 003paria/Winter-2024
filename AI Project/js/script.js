@@ -91,4 +91,9 @@ function keyPressed() {
       state = STATE.SIMULATION;
     }
   }
+  if (keyCode === 32) {
+    if (state === STATE.SIMULATION) {
+      state = STATE.LIST;
+    }
+  }
 }
