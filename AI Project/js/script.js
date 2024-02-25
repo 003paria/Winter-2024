@@ -15,13 +15,36 @@ let backgroundSimulation;
 // User's webcam
 let video;
 // The name of our model
-let modelName = `Handpose`;
-// Handpose object (using the name of the model for clarity)
+let modelName = 'Handpose';
+// Handpose object
 let handpose;
 // The current set of predictions made by Handpose once it's running
 let predictions = [];
 // The item we are trying to find 
-let item; 
+let item = [
+{
+  x: 395,
+  y: 149.5
+}, {
+  x: 203,
+  y: 413.5
+}, {
+  x: 54,
+  y: 521.5
+}, {
+  x: 58,
+  y: 46.5
+}, {
+  x: 346,
+  y: 336.5
+}, {
+  x: 1125,
+  y: 170.5
+}, {
+  x: 774,
+  y: 537.5
+}
+]; 
 // The indextracker 
 let indexCircle = {
   x : undefined,
@@ -71,8 +94,7 @@ function modelLoaded() {
   state = STATE.INTRO;
   // What to do 
   handpose.on('predict', handleHandDetection);   
-  // Listen for prediction events from Handpose and store the results in our
-  // predictions array when they occur
+  // Listen for prediction events from Handpose and store the results in our predictions array when they occur
 }
 
 /**
@@ -113,17 +135,22 @@ function simulation(){
     if (predictions.length > 0) {
       // If yes, then get the positions of the tip and base of the index finger
       updateIndexCircle(predictions[0]);
-  }
 
-    // Check if the tip of the "pin" is touching the bubble
-    let d = dist(indexCircle.x, indexCircle.y, item.x, item.y);
+    for (i=0; i < item.length; i++){
+    // Check if index finger is touching one of the items in the item array 
+    let d = dist(indexCircle.x, indexCircle.y, item[i].x, item[i].y);
     if (d < bubble.size / 2) {
-      // draw a green circle
-      found();
+    // draw a green circle
+    push();
+    fill(0, 255, 0);
+    noStroke();
+    ellipse(item[i].x, item[i].y, indexCircle.size);
+    pop();
+    }
+   // Display the current position of the index  
+   displayIndex();
   }
-
-  // Display the current position of the index  
-  displayIndex();
+ }
 }
 
 function win(){
@@ -137,8 +164,6 @@ function handleHandDetection(results) {
     predictions = results;
   }
 
-
-
 function updateIndexCircle(prediction){
   indexCircle.x = prediction.annotations.indexFinger[3][0];
   indexCircle.y = prediction.annotations.indexFinger[3][1];
@@ -151,6 +176,15 @@ function displayIndex() {
   // Draw index circle
   push();
   fill(255, 0, 0);
+  noStroke();
+  ellipse(indexCircle.x, indexCircle.y, indexCircle.size);
+  pop();
+}
+
+function found() {
+  // Draw index circle
+  push();
+  fill(0, 255, 0);
   noStroke();
   ellipse(indexCircle.x, indexCircle.y, indexCircle.size);
   pop();
