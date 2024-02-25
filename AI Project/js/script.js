@@ -57,9 +57,23 @@ Description of setup
 function setup() {
   // Create a fixed canvas 
   createCanvas(1200, 570);
+
+  // Start webcam and hide the resulting HTML element
+  video = createCapture(VIDEO);
+  video.hide();
+
+  // Start the Handpose model and switch to our running state when it loads
+  handpose = ml5.handpose(video, {flipHorizontal: true}, modelLoaded)
 }
 
-
+function modelLoaded() {
+  // Now we know we're ready we can switch states
+  state = STATE.INTRO;
+  // What to do 
+  handpose.on('predict', handleHandDetection);   
+  // Listen for prediction events from Handpose and store the results in our
+  // predictions array when they occur
+}
 
 /**
 Description of draw()
@@ -103,7 +117,9 @@ function lose(){
   background(0,0,250);
 }
 
-
+function handleHandDetection(results) {
+    predictions = results;
+  }
 
 // function for when the user presses ENTER and SPACE 
 function keyPressed() {    
@@ -121,19 +137,4 @@ function keyPressed() {
       state = STATE.LIST;
     }
   }
-}
-
-
-function displayMouseCoordinates() {
-  // Display the mouse coordinates
-  let mouseXPosition = mouseX;
-  let mouseYPosition = mouseY;
-  
-  // Set text style
-  textSize(16);
-  fill(0);  
-  
-  // Display coordinates at (20, 20)
-  text("MouseX: " + mouseXPosition, 20, 20);
-  text("MouseY: " + mouseYPosition, 20, 40);
 }
