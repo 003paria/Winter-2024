@@ -114,7 +114,18 @@ function simulation(){
       // If yes, then get the positions of the tip and base of the index finger
       updateIndexCircle(predictions[0]);
   }
+
+    // Check if the tip of the "pin" is touching the bubble
+    let d = dist(indexCircle.x, indexCircle.y, item.x, item.y);
+    if (d < bubble.size / 2) {
+      // draw a green circle
+      found();
+  }
+
+  // Display the current position of the index  
+  displayIndex();
 }
+
 function win(){
   background(0,250,0);
 }
@@ -132,6 +143,19 @@ function updateIndexCircle(prediction){
   indexCircle.x = prediction.annotations.indexFinger[3][0];
   indexCircle.y = prediction.annotations.indexFinger[3][1];
 }
+
+/**
+Displays the finger as a red circle.
+*/
+function displayIndex() {
+  // Draw index circle
+  push();
+  fill(255, 0, 0);
+  noStroke();
+  ellipse(indexCircle.x, indexCircle.y, indexCircle.size);
+  pop();
+}
+
 // function for when the user presses ENTER and SPACE 
 function keyPressed() {    
   // if we are in intro then move on to the list, else go to the simulation
