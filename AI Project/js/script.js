@@ -7,9 +7,12 @@ author, and this description to match your project!
 */
 
 "use strict";
+//Background image stuff 
 let backgroundImage;
 let backgroundList; 
 let backgroundSimulation; 
+
+//State stuff 
 const STATE = {
   INTRO: 'INTRO',
   LIST: 'LIST',
@@ -18,7 +21,6 @@ const STATE = {
   LOSE: 'LOSE'
 };
 let state = 'INTRO';
-
 
 /**
 Description of preload
@@ -36,8 +38,8 @@ Description of setup
 function setup() {
   // Create a fixed canvas 
   createCanvas(1200, 570);
-
 }
+
 
 
 /**
@@ -73,6 +75,7 @@ function list(){
 }
 function simulation(){
   background(backgroundSimulation);
+  displayMouseCoordinates();
 }
 function win(){
   background(0,250,0);
@@ -81,19 +84,37 @@ function lose(){
   background(0,0,250);
 }
 
+
+
 // function for when the user presses ENTER and SPACE 
-function keyPressed() {
+function keyPressed() {    
+  // if we are in intro then move on to the list, else go to the simulation
   if (keyCode === ENTER) {
-    // if we are in intro then move on to the list, else go to the simulation
     if (state === STATE.INTRO) {
       state = STATE.LIST;
     } else {
       state = STATE.SIMULATION;
     }
   }
+  // if we are in the simulation (only) then move to the list when the use presses SPACE
   if (keyCode === 32) {
     if (state === STATE.SIMULATION) {
       state = STATE.LIST;
     }
   }
+}
+
+
+function displayMouseCoordinates() {
+  // Display the mouse coordinates
+  let mouseXPosition = mouseX;
+  let mouseYPosition = mouseY;
+  
+  // Set text style
+  textSize(16);
+  fill(0);
+  
+  // Display coordinates at (20, 20)
+  text("MouseX: " + mouseXPosition, 20, 20);
+  text("MouseY: " + mouseYPosition, 20, 40);
 }
