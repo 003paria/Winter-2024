@@ -8,8 +8,10 @@ author, and this description to match your project!
 
 "use strict";
 let backgroundImage;
+let backgroundList; 
 const STATE = {
   INTRO: 'INTRO',
+  LIST: 'LIST',
   SIMULATION: 'SIMULATION',
   WIN: 'WIN',
   LOSE: 'LOSE'
@@ -22,6 +24,7 @@ Description of preload
 */
 function preload() {
   backgroundImage = loadImage('assets/images/intro.jpg');
+  backgroundList = loadImage('assets/images/list.jpg');
 }
 
 
@@ -43,6 +46,9 @@ function draw() {
     case STATE.INTRO:
       intro();
       break;
+    case STATE.LIST:
+      list();
+      break;
     case STATE.SIMULATION:
       simulation();
       break;
@@ -60,15 +66,27 @@ function intro(){
   // Set the background to the into image 
   background(backgroundImage);
 }
-
+function list(){
+  background(backgroundList);
+}
 function simulation(){
-
+  background(250,0,0);
 }
-
 function win(){
-
+  background(0,250,0);
+}
+function lose(){
+  background(0,0,250);
 }
 
-function lose(){
-
+// function for when the user presses ENTER and SPACE 
+function keyPressed() {
+  if (keyCode === ENTER) {
+    // if we are in intro then move on to the list, else go to the simulation
+    if (state === STATE.INTRO) {
+      state = STATE.LIST;
+    } else {
+      state = STATE.SIMULATION;
+    }
+  }
 }
