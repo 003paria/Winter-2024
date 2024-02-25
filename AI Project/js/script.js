@@ -9,6 +9,7 @@ author, and this description to match your project!
 "use strict";
 let backgroundImage;
 let backgroundList; 
+let backgroundSimulation; 
 const STATE = {
   INTRO: 'INTRO',
   LIST: 'LIST',
@@ -25,6 +26,7 @@ Description of preload
 function preload() {
   backgroundImage = loadImage('assets/images/intro.jpg');
   backgroundList = loadImage('assets/images/list.jpg');
+  backgroundSimulation = loadImage ('assets/images/simulation.jpg');
 }
 
 
@@ -70,7 +72,7 @@ function list(){
   background(backgroundList);
 }
 function simulation(){
-  background(250,0,0);
+  background(backgroundSimulation);
 }
 function win(){
   background(0,250,0);
