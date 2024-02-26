@@ -11,6 +11,9 @@ author, and this description to match your project!
 let backgroundImage;
 let backgroundList; 
 let backgroundSimulation; 
+let backgroundWin;
+let backgroundLose;
+let backgroundTime; 
 
 // User's webcam
 let video;
@@ -58,7 +61,8 @@ const STATE = {
   LIST: 'LIST',
   SIMULATION: 'SIMULATION',
   WIN: 'WIN',
-  LOSE: 'LOSE'
+  LOSE: 'LOSE',
+  NOTIME : 'NOTIME'
 };
 
 //Current state of the program 
@@ -71,6 +75,9 @@ function preload() {
   backgroundImage = loadImage('assets/images/intro.jpg');
   backgroundList = loadImage('assets/images/list.jpg');
   backgroundSimulation = loadImage ('assets/images/simulation.jpg');
+  backgroundWin = loadImage ('assets/images/goodjob.jpg');
+  backgroundLose = loadImage ('assets/images/byebye.jpg');
+  backgroundTime = loadImage ('assets/images/faster.jpg');
 }
 
 
@@ -117,6 +124,9 @@ function draw() {
     case STATE.LOSE:
       lose();
       break;
+   case STATE.NOTIME:
+      notime();
+      break;
   }
 }
 
@@ -162,11 +172,15 @@ function simulation() {
 
 
 function win(){
-  background(0,250,0);
+  background(backgroundWin);
 }
 function lose(){
-  background(0,0,250);
+  background(backgroundLose);
 }
+function notime(){
+  background(backgroundTime);
+}
+
 
 function handleHandDetection(results) {
     predictions = results;
