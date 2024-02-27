@@ -22,8 +22,9 @@ let modelName = 'Handpose';
 // Handpose object
 let handpose;
 //Timer Stuff 
-let timerValue = 120; // Timer starts at 2 minutes (120 seconds)
-let intervalId;
+var timeleft = 120;
+var startTime = 0;
+var currentTime = 0;
 // The current set of predictions made by Handpose once it's running
 let predictions = [];
 // Array to add the items that the user finds 
@@ -121,8 +122,6 @@ function setup() {
 
   // Start the Handpose model and switch to our running state when it loads
   handpose = ml5.handpose(video, {flipHorizontal: true}, modelLoaded)
-
-  textAlign(CENTER);
 }
 
 function modelLoaded() {
@@ -169,21 +168,31 @@ function list(){
   background(backgroundList);
 }
 
+
+
+
 function simulation() {
   background(backgroundSimulation);  
-  // Draw simulation state elements
-  if (timerValue >= 10) {
-    text("Time Left: " + Math.floor(timerValue / 60) + ":" + timerValue % 60, width / 2, height / 2);
-  } else {
-    text("Time Left: " + Math.floor(timerValue / 60) + ":0" + timerValue % 60, width / 2, height / 2);
-  }
+  // Start the timer
+ 
+  startTime = millis();
+
+  
+  // Calculate the current time left
+  currentTime = floor((millis() - startTime) / 1000);
+  let remainingTime = timeleft - currentTime;
+
+  // Display the timer on the canvas
+  textSize(32);
+  fill(255);
+  textAlign(CENTER);
+  text("Time Left: " + nf(floor(remainingTime / 60), 2) + ':' + nf(remainingTime % 60, 2), width / 2, 50);
 
   // Check if the timer has reached 0
-  if (timerValue === 0) {
+  if (remainingTime <= 0) {
     state = STATE.NOTIME;
-    return; // Exit the function to prevent further processing
+    return;
   }
-
   // Check if there are currently predictions to display
   if (predictions.length > 0) {
       // If yes, then get the positions of the tip and base of the index finger
@@ -269,17 +278,9 @@ function found(position) {
   pop();
 }
 
-function startTimer() {
-  // Start the timer only when entering the simulation state
-  intervalId = setInterval(timeIt, 1000); // Call timeIt() every second (1000 milliseconds)
-}
 
-function timeIt() {
-  // Decrement timer value
-  if (timerValue > 0) {
-    timerValue--;
-  }
-}
+
+
 // function for when the user presses ENTER and SPACE 
 function keyPressed() {    
   // if we are in intro then move on to the list, else go to the simulation
