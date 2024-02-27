@@ -145,7 +145,7 @@ function draw() {
       break;
     case STATE.SIMULATION:
       simulation();
-      startTimer(); // Start the timer when entering the simulation state
+      startSimulation();
       break;
     case STATE.WIN:
      win();
@@ -174,13 +174,11 @@ function list(){
 function simulation() {
   background(backgroundSimulation);  
   // Start the timer
- 
-  startTime = millis();
+  // Calculate the elapsed time since the simulation started
+  let elapsedTime = (millis() - startTime) / 1000;
 
-  
-  // Calculate the current time left
-  currentTime = floor((millis() - startTime) / 1000);
-  let remainingTime = timeleft - currentTime;
+  // Calculate the remaining time
+  let remainingTime = timeleft - elapsedTime;
 
   // Display the timer on the canvas
   textSize(32);
@@ -193,6 +191,7 @@ function simulation() {
     state = STATE.NOTIME;
     return;
   }
+
   // Check if there are currently predictions to display
   if (predictions.length > 0) {
       // If yes, then get the positions of the tip and base of the index finger
@@ -278,8 +277,12 @@ function found(position) {
   pop();
 }
 
-
-
+// Function to start the simulation and timer
+function startSimulation() {
+  // Reset the timer
+  startTime = millis();
+  // Reset other simulation variables if needed
+}
 
 // function for when the user presses ENTER and SPACE 
 function keyPressed() {    
