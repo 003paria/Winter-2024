@@ -96,6 +96,11 @@ const STATE = {
 //Current state of the program 
 let state = 'INTRO';
 
+function convertSeconds(s) {
+  var min = floor(s / 60);
+  var sec = s % 60;
+  return nf(min, 2) + ':' + nf(sec, 2);
+}
 /**
 Description of preload
 */
@@ -122,6 +127,7 @@ function setup() {
 
   // Start the Handpose model and switch to our running state when it loads
   handpose = ml5.handpose(video, {flipHorizontal: true}, modelLoaded)
+
 }
 
 function modelLoaded() {
@@ -145,7 +151,6 @@ function draw() {
       break;
     case STATE.SIMULATION:
       simulation();
-      startSimulation();
       break;
     case STATE.WIN:
      win();
@@ -169,29 +174,32 @@ function list(){
 }
 
 
-
-
 function simulation() {
   background(backgroundSimulation);  
-  // Start the timer
-  // Calculate the elapsed time since the simulation started
-  let elapsedTime = (millis() - startTime) / 1000;
+
+
+  // Start the timer if it hasn't started yet
+  if (startTime === 0) {
+    startTime = millis();
+  }
+
+  // Calculate the current time
+  currentTime = floor((millis() - startTime) / 1000);
 
   // Calculate the remaining time
-  let remainingTime = timeleft - elapsedTime;
+  let remainingTime = timeleft - currentTime;
 
   // Display the timer on the canvas
   textSize(32);
   fill(255);
-  textAlign(CENTER);
-  text("Time Left: " + nf(floor(remainingTime / 60), 2) + ':' + nf(remainingTime % 60, 2), width / 2, 50);
+  textAlign(CENTER, CENTER); // Center the text horizontally and vertically
+  text(convertSeconds(remainingTime), width / 2, 40); // Display timer at the center of the canvas
 
   // Check if the timer has reached 0
   if (remainingTime <= 0) {
     state = STATE.NOTIME;
-    return;
   }
-
+  
   // Check if there are currently predictions to display
   if (predictions.length > 0) {
       // If yes, then get the positions of the tip and base of the index finger
@@ -275,13 +283,6 @@ function found(position) {
   noStroke();
   ellipse(position.x, position.y, indexCircle.size);
   pop();
-}
-
-// Function to start the simulation and timer
-function startSimulation() {
-  // Reset the timer
-  startTime = millis();
-  // Reset other simulation variables if needed
 }
 
 // function for when the user presses ENTER and SPACE 
