@@ -32,20 +32,20 @@ let item = [
   x: 203,
   y: 413.5
 }, {
-  x: 54,
-  y: 521.5
+  x: 52,
+  y: 364.5
 }, {
-  x: 58,
-  y: 46.5
+  x: 84,
+  y: 90.5
 }, {
   x: 346,
   y: 336.5
 }, {
-  x: 1125,
-  y: 170.5
+  x: 571,
+  y: 223.5
 }, {
-  x: 774,
-  y: 537.5
+  x: 585,
+  y: 106.5
 }
 ]; 
 // The indextracker 
@@ -54,6 +54,16 @@ let indexCircle = {
   y : undefined,
   size : 20
 };
+//Jelly Fish 
+let jellyFish = [
+{
+  x : 235,
+  y : 182.5
+}, {
+  x: 134,
+  y: 148.5
+}
+];
 
 //State stuff 
 const STATE = {
@@ -140,6 +150,7 @@ function list(){
 }
 function simulation() {
   background(backgroundSimulation);
+  displayMouseCoordinates();
 
   // Check if there are currently predictions to display
   if (predictions.length > 0) {
@@ -228,4 +239,18 @@ function keyPressed() {
       state = STATE.LIST;
     }
   }
+}
+
+function displayMouseCoordinates() {
+  // Display the mouse coordinates
+  let mouseXPosition = mouseX;
+  let mouseYPosition = mouseY;
+
+  // Set text style
+  textSize(16);
+  fill(0);
+
+  // Display coordinates at (20, 20)
+  text("MouseX: " + mouseXPosition, 20, 20);
+  text("MouseY: " + mouseYPosition, 20, 40);
 }
