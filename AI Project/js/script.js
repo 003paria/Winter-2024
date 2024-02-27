@@ -23,6 +23,8 @@ let modelName = 'Handpose';
 let handpose;
 // The current set of predictions made by Handpose once it's running
 let predictions = [];
+// Array to add the items that the user finds 
+let foundItems = [];
 // The item we are trying to find 
 let item = [
 {
@@ -148,9 +150,9 @@ function intro(){
 function list(){
   background(backgroundList);
 }
+
 function simulation() {
   background(backgroundSimulation);
-  displayMouseCoordinates();
 
   // Check if there are currently predictions to display
   if (predictions.length > 0) {
@@ -159,20 +161,24 @@ function simulation() {
 
     // Loop through each item in the item array
     for (let i = 0; i < item.length; i++) {
-      // Calculate the distance between the item and the index circle
-      let d = dist(indexCircle.x, indexCircle.y, item[i].x, item[i].y);
-
-      // Set an acceptable distance threshold
-      let acceptableDistance = indexCircle.size / 2;
-
-      // Check if the distance is within the acceptable threshold
-      if (d < acceptableDistance) {
-        // Draw a green circle around the item
-        push();
-        fill(0, 255, 0);
-        noStroke();
-        ellipse(item[i].x, item[i].y, indexCircle.size);
-        pop();
+      // Check if the item has already been found
+      if (!foundItems.includes(i)) {
+        // Calculate the distance between the item and the index circle
+        let d = dist(indexCircle.x, indexCircle.y, item[i].x, item[i].y);
+        // Set an acceptable distance threshold
+        let acceptableDistance = indexCircle.size / 2;
+        // Check if the distance is within the acceptable threshold
+        if (d < acceptableDistance) {
+          // Draw a green circle around the item
+          push();
+          fill(0, 255, 0);
+          noStroke();
+          ellipse(item[i].x, item[i].y, indexCircle.size);
+          pop();
+          
+          // Add the index of the found item to the foundItems array
+          foundItems.push(i);
+        }
       }
     }
 
@@ -180,7 +186,6 @@ function simulation() {
     displayIndex();
   }
 }
-
 
 function win(){
   background(backgroundWin);
@@ -239,18 +244,4 @@ function keyPressed() {
       state = STATE.LIST;
     }
   }
-}
-
-function displayMouseCoordinates() {
-  // Display the mouse coordinates
-  let mouseXPosition = mouseX;
-  let mouseYPosition = mouseY;
-
-  // Set text style
-  textSize(16);
-  fill(0);
-
-  // Display coordinates at (20, 20)
-  text("MouseX: " + mouseXPosition, 20, 20);
-  text("MouseY: " + mouseYPosition, 20, 40);
 }
