@@ -179,7 +179,11 @@ function simulation() {
               }
           }
       }
-
+        // Check if all items have been found
+        if (foundItems.length === item.length) {
+          // Change the state to WIN
+          state = STATE.WIN;
+      }
       // Display the current position of the index
       displayIndex();
   }
