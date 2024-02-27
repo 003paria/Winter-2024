@@ -1,35 +1,37 @@
 /**
-Title of Project
-Author Name
+Title of Project: Jellyfish Jive 
 
-This is a template. You must fill in the title,
-author, and this description to match your project!
+Paria Jafarian 
+
+In this game you take on a mission as a marine biologist to cunduct research by scuba diving into the Pacific Ocean.
+Your research group needs you to find certain rare species. So your goal is to find these special species by pointing your finger to them.
+But you gotta be very fast because your oxygen mask might run out at any moment!!
+
 */
 
 "use strict";
-//Background image stuff 
+//Background image for different states  
 let backgroundImage;
 let backgroundList; 
 let backgroundSimulation; 
 let backgroundWin;
 let backgroundLose;
 let backgroundTime; 
-
 // User's webcam
 let video;
-// The name of our model
+// The name of the model
 let modelName = 'Handpose';
 // Handpose object
 let handpose;
-//Timer Stuff 
-var timeleft = 120;
-var startTime = 0;
-var currentTime = 0;
+//Timer variables  
+let timeleft = 120;
+let startTime = 0;
+let currentTime = 0;
 // The current set of predictions made by Handpose once it's running
 let predictions = [];
 // Array to add the items that the user finds 
 let foundItems = [];
-// The item we are trying to find 
+// The items the use is trying to find 
 let item = [
 {
   x: 395,
@@ -54,7 +56,7 @@ let item = [
   y: 106.5
 }
 ]; 
-// The indextracker 
+// Tracking the index finger 
 let indexCircle = {
   x : undefined,
   y : undefined,
@@ -82,8 +84,7 @@ let jellyFish = [
   y: 161.5
 }
 ];
-
-//State stuff 
+//Different States
 const STATE = {
   INTRO: 'INTRO',
   LIST: 'LIST',
@@ -92,44 +93,28 @@ const STATE = {
   LOSE: 'LOSE',
   NOTIME : 'NOTIME'
 };
-
 //Current state of the program 
 let state = 'INTRO';
 
-function convertSeconds(s) {
-  var min = floor(s / 60);
-  var sec = s % 60;
-  return nf(min, 2) + ':' + nf(sec, 2);
-}
-/**
-Description of preload
-*/
+// Making sure that all of my background images are loaded
 function preload() {
   backgroundImage = loadImage('assets/images/intro.jpg');
   backgroundList = loadImage('assets/images/list.jpg');
-  backgroundSimulation = loadImage ('assets/images/simulation.jpg');
-  backgroundWin = loadImage ('assets/images/goodjob.jpg');
-  backgroundLose = loadImage ('assets/images/byebye.jpg');
-  backgroundTime = loadImage ('assets/images/faster.jpg');
+  backgroundSimulation = loadImage('assets/images/simulation.jpg');
+  backgroundWin = loadImage('assets/images/goodjob.jpg');
+  backgroundLose = loadImage('assets/images/byebye.jpg');
+  backgroundTime = loadImage('assets/images/faster.jpg');
 }
-
-
-/**
-Description of setup
-*/
+// Setting up ml5 handpose model 
 function setup() {
   // Create a fixed canvas 
   createCanvas(1200, 570);
-
   // Start webcam and hide the resulting HTML element
   video = createCapture(VIDEO);
   video.hide();
-
   // Start the Handpose model and switch to our running state when it loads
   handpose = ml5.handpose(video, {flipHorizontal: true}, modelLoaded)
-
 }
-
 function modelLoaded() {
   // Now we know we're ready we can switch states
   state = STATE.INTRO;
@@ -137,10 +122,10 @@ function modelLoaded() {
   handpose.on('predict', handleHandDetection);   
   // Listen for prediction events from Handpose and store the results in our predictions array when they occur
 }
-
-/**
-Description of draw()
-*/
+function handleHandDetection(results) {
+    predictions = results;
+  }
+// Responsible for switching from on state to another
 function draw() {
   switch (state) {
     case STATE.INTRO:
@@ -163,49 +148,50 @@ function draw() {
       break;
   }
 }
-
-// State Functions 
+// All the different State Functions 
 function intro(){
-  // Set the background to the into image 
   background(backgroundImage);
 }
 function list(){
   background(backgroundList);
 }
-
-
+function win(){
+  background(backgroundWin);
+}
+function lose(){
+  background(backgroundLose);
+}
+function notime(){
+  background(backgroundTime);
+}
+/**
+Starting the timer, drawing a green circle on the item once it has been found, switching to WIN state when all 7 items have been found, 
+switching to NOTIME state when the timer runs out and finally, switching to LOSE state when the user goes on a jelly fish.
+*/
 function simulation() {
   background(backgroundSimulation);  
-
-
   // Start the timer if it hasn't started yet
   if (startTime === 0) {
     startTime = millis();
   }
-
   // Calculate the current time
   currentTime = floor((millis() - startTime) / 1000);
-
   // Calculate the remaining time
   let remainingTime = timeleft - currentTime;
-
   // Display the timer on the canvas
   textSize(32);
   fill(255);
-  textAlign(CENTER, CENTER); // Center the text horizontally and vertically
-  text(convertSeconds(remainingTime), width / 2, 40); // Display timer at the center of the canvas
-
+  textAlign(CENTER, CENTER); 
+  text(convertSeconds(remainingTime), width / 2, 40); 
   // Check if the timer has reached 0
   if (remainingTime <= 0) {
     state = STATE.NOTIME;
   }
-  
   // Check if there are currently predictions to display
   if (predictions.length > 0) {
-      // If yes, then get the positions of the tip and base of the index finger
+      // If yes, then get the positions of the tip of the index finger
       updateIndexCircle(predictions[0]);
-
-        // Check if the user touches any jellyfish point
+        // Check if the user touches any of the jellyfish points
         for (let i = 0; i < jellyFish.length; i++) {
           let d = dist(indexCircle.x, indexCircle.y, jellyFish[i].x, jellyFish[i].y);
           let acceptableDistance = indexCircle.size / 2;
@@ -234,7 +220,7 @@ function simulation() {
               }
           }
       }
-        // Check if all items have been found
+        // Check if all the items have been found
         if (foundItems.length === item.length) {
           // Change the state to WIN
           state = STATE.WIN;
@@ -243,31 +229,18 @@ function simulation() {
       displayIndex();
   }
 }
-
-
-function win(){
-  background(backgroundWin);
+// Converting seconds to what we are used to seeing time represented as
+function convertSeconds(s) {
+  var min = floor(s / 60);
+  var sec = s % 60;
+  return nf(min, 2) + ':' + nf(sec, 2);
 }
-function lose(){
-  background(backgroundLose);
-}
-function notime(){
-  background(backgroundTime);
-}
-
-
-function handleHandDetection(results) {
-    predictions = results;
-  }
-
+// Getting the position of the index finger  
 function updateIndexCircle(prediction){
   indexCircle.x = prediction.annotations.indexFinger[3][0];
   indexCircle.y = prediction.annotations.indexFinger[3][1];
 }
-
-/**
-Displays the finger as a red circle.
-*/
+// Displays the finger as a red circle.
 function displayIndex() {
   // Draw index circle
   push();
@@ -276,7 +249,7 @@ function displayIndex() {
   ellipse(indexCircle.x, indexCircle.y, indexCircle.size);
   pop();
 }
-
+// Displays a green circle on the fouund item 
 function found(position) {
   push();
   fill(0, 255, 0);
@@ -284,7 +257,6 @@ function found(position) {
   ellipse(position.x, position.y, indexCircle.size);
   pop();
 }
-
 // function for when the user presses ENTER and SPACE 
 function keyPressed() {    
   // if we are in intro then move on to the list, else go to the simulation
