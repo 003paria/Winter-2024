@@ -64,6 +64,18 @@ let jellyFish = [
 }, {
   x: 134,
   y: 148.5
+}, {
+  x: 184,
+  y: 186.5
+}, {
+  x: 226,
+  y: 238.5
+}, {
+  x: 135,
+  y: 168.5
+}, {
+  x: 90,
+  y: 161.5
 }
 ];
 
@@ -159,6 +171,15 @@ function simulation() {
       // If yes, then get the positions of the tip and base of the index finger
       updateIndexCircle(predictions[0]);
 
+        // Check if the user touches any jellyfish point
+        for (let i = 0; i < jellyFish.length; i++) {
+          let d = dist(indexCircle.x, indexCircle.y, jellyFish[i].x, jellyFish[i].y);
+          let acceptableDistance = indexCircle.size / 2;
+          if (d < acceptableDistance) {
+              // Change the state to LOSE if the user touches a jellyfish point
+              state = STATE.LOSE;
+          }
+      }
       // Loop through each item in the item array
       for (let i = 0; i < item.length; i++) {
           // Check if the item has already been found
@@ -247,3 +268,5 @@ function keyPressed() {
     }
   }
 }
+
+
