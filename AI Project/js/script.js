@@ -156,36 +156,35 @@ function simulation() {
 
   // Check if there are currently predictions to display
   if (predictions.length > 0) {
-    // If yes, then get the positions of the tip and base of the index finger
-    updateIndexCircle(predictions[0]);
+      // If yes, then get the positions of the tip and base of the index finger
+      updateIndexCircle(predictions[0]);
 
-    // Loop through each item in the item array
-    for (let i = 0; i < item.length; i++) {
-      // Check if the item has already been found
-      if (!foundItems.includes(i)) {
-        // Calculate the distance between the item and the index circle
-        let d = dist(indexCircle.x, indexCircle.y, item[i].x, item[i].y);
-        // Set an acceptable distance threshold
-        let acceptableDistance = indexCircle.size / 2;
-        // Check if the distance is within the acceptable threshold
-        if (d < acceptableDistance) {
-          // Draw a green circle around the item
-          push();
-          fill(0, 255, 0);
-          noStroke();
-          ellipse(item[i].x, item[i].y, indexCircle.size);
-          pop();
-          
-          // Add the index of the found item to the foundItems array
-          foundItems.push(i);
-        }
+      // Loop through each item in the item array
+      for (let i = 0; i < item.length; i++) {
+          // Check if the item has already been found
+          if (foundItems.includes(i)) {
+              // Draw a green circle around the item if it has been found
+              found(item[i]);
+          } else {
+              // Calculate the distance between the item and the index circle
+              let d = dist(indexCircle.x, indexCircle.y, item[i].x, item[i].y);
+              // Set an acceptable distance threshold
+              let acceptableDistance = indexCircle.size / 2;
+              // Check if the distance is within the acceptable threshold
+              if (d < acceptableDistance) {
+                  // Draw a green circle around the item
+                  found(item[i]);
+                  // Add the index of the found item to the foundItems array
+                  foundItems.push(i);
+              }
+          }
       }
-    }
 
-    // Display the current position of the index
-    displayIndex();
+      // Display the current position of the index
+      displayIndex();
   }
 }
+
 
 function win(){
   background(backgroundWin);
@@ -219,12 +218,11 @@ function displayIndex() {
   pop();
 }
 
-function found() {
-  // Draw index circle
+function found(position) {
   push();
   fill(0, 255, 0);
   noStroke();
-  ellipse(indexCircle.x, indexCircle.y, indexCircle.size);
+  ellipse(position.x, position.y, indexCircle.size);
   pop();
 }
 
