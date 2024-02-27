@@ -21,6 +21,9 @@ let video;
 let modelName = 'Handpose';
 // Handpose object
 let handpose;
+//Timer Stuff 
+let timerValue = 120; // Timer starts at 2 minutes (120 seconds)
+let intervalId;
 // The current set of predictions made by Handpose once it's running
 let predictions = [];
 // Array to add the items that the user finds 
@@ -118,6 +121,8 @@ function setup() {
 
   // Start the Handpose model and switch to our running state when it loads
   handpose = ml5.handpose(video, {flipHorizontal: true}, modelLoaded)
+
+  textAlign(CENTER);
 }
 
 function modelLoaded() {
@@ -141,6 +146,7 @@ function draw() {
       break;
     case STATE.SIMULATION:
       simulation();
+      startTimer(); // Start the timer when entering the simulation state
       break;
     case STATE.WIN:
      win();
@@ -164,7 +170,19 @@ function list(){
 }
 
 function simulation() {
-  background(backgroundSimulation);
+  background(backgroundSimulation);  
+  // Draw simulation state elements
+  if (timerValue >= 10) {
+    text("Time Left: " + Math.floor(timerValue / 60) + ":" + timerValue % 60, width / 2, height / 2);
+  } else {
+    text("Time Left: " + Math.floor(timerValue / 60) + ":0" + timerValue % 60, width / 2, height / 2);
+  }
+
+  // Check if the timer has reached 0
+  if (timerValue === 0) {
+    state = STATE.NOTIME;
+    return; // Exit the function to prevent further processing
+  }
 
   // Check if there are currently predictions to display
   if (predictions.length > 0) {
@@ -251,6 +269,17 @@ function found(position) {
   pop();
 }
 
+function startTimer() {
+  // Start the timer only when entering the simulation state
+  intervalId = setInterval(timeIt, 1000); // Call timeIt() every second (1000 milliseconds)
+}
+
+function timeIt() {
+  // Decrement timer value
+  if (timerValue > 0) {
+    timerValue--;
+  }
+}
 // function for when the user presses ENTER and SPACE 
 function keyPressed() {    
   // if we are in intro then move on to the list, else go to the simulation
