@@ -49,8 +49,11 @@ class Play extends Phaser.Scene {
   
   // Function to spawn a bug
   spawnBug() {
-    // Position all the bugs randomly within the world bounds
-    Phaser.Actions.RandomRectangle(this.bugs.getChildren(), this.physics.world.bounds);
+  // Calculate the Y position randomly within the game height
+  let y = Phaser.Math.Between(50, this.game.config.height - 50); // Adjust Y range as needed
+
+  // Create a bug at the far left edge of the screen with the random Y position
+  this.bug = this.bugs.create(0, y, 'bug');
   }
 
   // Called when a bug is smashed
