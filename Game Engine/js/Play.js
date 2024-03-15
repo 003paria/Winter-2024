@@ -29,7 +29,9 @@ class Play extends Phaser.Scene {
     
     // Create a timer event to spawn bugs every second
     this.timerEvent = this.time.addEvent({ delay: 1000, callback: this.spawnBug, callbackScope: this, loop: true });
+
     // Listen for mouse clicks to smash bugs
+    this.input.on('pointerdown', this.smashBug, this);
   }
   
   // Spawns a bug at a random position on the screen
@@ -54,7 +56,11 @@ class Play extends Phaser.Scene {
 
   // Called every frame
   update() {
-
+    // Check if any bugs have reached the left side of the screen
+    if (this.bugs.getChildren().some(bug => bug.getBounds().right <= 0)) {
+      // If so, end the game
+      this.gameOver();
+    }
   }
 
 }
