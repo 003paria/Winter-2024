@@ -39,7 +39,18 @@ class Play extends Phaser.Scene {
     bug.setCollideWorldBounds(true); // Ensure the bug stays within the game world
     bug.setBounce(1); // Make the bug bounce off the boundaries
   }
-
+  // Called when a bug is smashed
+  smashBug(pointer) {
+    // Check if any bugs were clicked
+    let clickedBugs = this.physics.overlapPoint(pointer.x, pointer.y, this.bugs.getChildren());
+    if (clickedBugs.length > 0) {
+      // Destroy the first bug clicked
+      clickedBugs[0].destroy();
+      // Update the score
+      this.score += 1;
+      this.scoreText.setText('Score: ' + this.score);
+    }
+  }
 
   // Called every frame
   update() {
