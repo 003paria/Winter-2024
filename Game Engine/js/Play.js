@@ -1,8 +1,6 @@
 /**
-
 In this arcade-style game, players take on the role of a bug exterminator tasked with eliminating pesky bugs infesting a computer program. 
 The bugs are represented by cartoon insects crawling around the code, and players must squash them before they cause havoc.
-
 */
 
 
@@ -21,9 +19,24 @@ class Play extends Phaser.Scene {
   create() {
     // Add background image
     this.add.image(0, 0, 'background').setOrigin(0);
-    // Create a group to store bugs
-    this.bugs = this.physics.add.group();  
-    // Initialize score
+
+  // Create a group of bugs with some basic physics configuration
+  this.bugs = this.physics.add.group({
+    // Image key to use
+    key: 'bug',
+    // How many
+    quantity: 2,
+    // Collide with the "walls"
+    // collideWorldBounds: true,
+    // Set the initial velocity of the bugs to move towards the right
+    velocityX: 100, // Adjust velocity as needed
+    // How much to they bounce when they hit something?
+    bounceX: 1, // Ensure full bounce
+    bounceY: 1
+  });
+
+
+  // Initialize score
     this.score = 0;
     this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
     
@@ -34,13 +47,12 @@ class Play extends Phaser.Scene {
     this.input.on('pointerdown', this.smashBug, this);
   }
   
-  // Spawns a bug at a random position on the screen
+  // Function to spawn a bug
   spawnBug() {
-    let bug = this.bugs.create(Phaser.Math.Between(0, this.game.config.width), Phaser.Math.Between(0, this.game.config.height), 'bug');
-    bug.setVelocityX(-200); // Move the bug towards the left
-    bug.setCollideWorldBounds(true); // Ensure the bug stays within the game world
-    bug.setBounce(1); // Make the bug bounce off the boundaries
+    // Position all the bugs randomly within the world bounds
+    Phaser.Actions.RandomRectangle(this.bugs.getChildren(), this.physics.world.bounds);
   }
+
   // Called when a bug is smashed
   smashBug(pointer) {
     // Check if any bugs were clicked
@@ -63,5 +75,15 @@ class Play extends Phaser.Scene {
     }
   }
 
+  // Ends the game
+  gameOver() {
+    // Stop spawning bugs
+    this.timerEvent.remove();
+    // Pause physics simulation
+    this.physics.pause();
+    // Display game over text
+    this.add.text(300, 250, 'Game Over', { fontSize: '64px', fill: '#FFF' });
+  }
 }
+
 
