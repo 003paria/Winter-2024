@@ -38,7 +38,6 @@ class Play extends Phaser.Scene {
     this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
     // Create a timer event to spawn bugs every second
     this.timerEvent = this.time.addEvent({ delay: 1000, callback: this.spawnBug, callbackScope: this, loop: true });
-
     // Listen for mouse clicks to smash bugs
     this.input.on('pointerdown', this.smashBug, this);
     console.log();
@@ -64,16 +63,15 @@ class Play extends Phaser.Scene {
     console.log();
 }
 
-
-
   // Called every frame
-  update() {
-    // Check if any bugs have reached the left side of the screen
-    if (this.bugs.getChildren().some(bug => bug.getBounds().right <= 0)) {
+// Called every frame
+update() {
+  // Check if any bugs have reached the right side of the screen
+  if (this.bugs.getChildren().some(bug => bug.getBounds().right >= this.game.config.width)) {
       // If so, end the game
       this.gameOver();
-    }
   }
+}
 
   // Ends the game
   gameOver() {
