@@ -64,14 +64,13 @@ class Play extends Phaser.Scene {
 }
 
   // Called every frame
-// Called every frame
-update() {
-  // Check if any bugs have reached the right side of the screen
-  if (this.bugs.getChildren().some(bug => bug.getBounds().right >= this.game.config.width)) {
-      // If so, end the game
-      this.gameOver();
+  update() {
+    // Check if any bugs have reached the right side of the screen
+    if (this.bugs.getChildren().some(bug => bug.x >= this.game.config.width)) {
+        // If so, end the game
+        this.gameOver();
+    }
   }
-}
 
   // Ends the game
   gameOver() {
