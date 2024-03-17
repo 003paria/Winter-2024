@@ -1,11 +1,11 @@
 /**
-Title of Project
-Author Name
+Bug Buster: The Code Cleaner
+Paria Jafarian 
 
-This is a template. You must fill in the title,
-author, and this description to match your project!
+In this game, players take on the role of a bug exterminator tasked with eliminating pesky bugs infesting a computer program. 
+The bugs are represented by cartoon insects crawling around the code, and players must squash them before they cause havoc. 
+There are two types of bugs, one of which is slower than the other type.   
 */
-
 
 "use strict";
 

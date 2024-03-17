@@ -1,3 +1,8 @@
+/**
+A  scene to display the introduction image which explains the game 
+to the player before switching to the "play" scene.
+*/
+
 class Intro extends Phaser.Scene {
 
   // Just sets the scene's key name
