@@ -33,11 +33,23 @@ class Play extends Phaser.Scene {
       bounceX: 1, // Ensure full bounce
       bounceY: 1
     });
+
+    // Create a group of bug2 (faster bugs)
+    this.bugs2 = this.physics.add.group({
+      key: 'bug2',
+      quantity: 1,
+      velocityX: 200, // Adjust velocity to make bug2 faster
+      bounceX: 1,
+      bounceY: 1
+  });
+
   // Initialize score
     this.score = 0;
     this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
+    
     // Create a timer event to spawn bugs every second
     this.timerEvent = this.time.addEvent({ delay: 1000, callback: this.spawnBug, callbackScope: this, loop: true });
+    
     // Listen for mouse clicks to smash bugs
     this.input.on('pointerdown', this.smashBug, this);
     console.log();
@@ -47,8 +59,10 @@ class Play extends Phaser.Scene {
   spawnBug() {
   // Calculate the Y position randomly within the game height
   let y = Phaser.Math.Between(50, this.game.config.height - 50); // Adjust Y range as needed
-  // Create a bug at the far left edge of the screen with the random Y position
-  this.bug = this.bugs.create(0, y, 'bug');
+  
+  // Create bugs and bug2 at the far left edge of the screen with the random Y position
+  this.bugs.create(0, y, 'bug');
+  this.bugs2.create(0, y, 'bug2');
   }
 
   // Called when a bug is smashed
@@ -61,6 +75,14 @@ class Play extends Phaser.Scene {
         }
     });
     console.log();
+
+    this.bugs2.children.iterate(bug2 => {
+      if (bug2 && bug2.getBounds && Phaser.Geom.Rectangle.ContainsPoint(bug2.getBounds(), pointer)) {
+          bug2.destroy();
+          this.score += 1;
+          this.scoreText.setText('Score: ' + this.score);
+      }
+  });    
 }
 
   // Called every frame
@@ -70,6 +92,10 @@ class Play extends Phaser.Scene {
         // If so, end the game
         this.gameOver();
     }
+    if (this.bugs2.getChildren().some(bug2 => bug2.x >= this.game.config.width)) {
+      // If so, end the game
+      this.gameOver();
+  }
   }
 
   // Ends the game
@@ -79,7 +105,7 @@ class Play extends Phaser.Scene {
     // Pause physics simulation
     this.physics.pause();
     // Display game over text
-    this.add.text(300, 250, 'Game Over', { fontSize: '64px', fill: '#FFF' });
+    this.add.text(250, 250, 'Game Over', { fontSize: '64px', fill: '#FFF' });
   }
 }
 

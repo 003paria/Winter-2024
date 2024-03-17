@@ -18,6 +18,7 @@ class Boot extends Phaser.Scene {
   preload() {
     // Load images 
     this.load.image('bug', 'assets/images/bug.png');
+    this.load.image('bug2', 'assets/images/bug2.png');
     // Load background image
     this.load.image('background', 'assets/images/background1.png');   
 
