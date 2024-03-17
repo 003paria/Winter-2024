@@ -19,7 +19,7 @@ let config = {
       debug: false
     }
   },
-  scene: [Boot, Intro, Play]
+  scene: [Boot, Intro, Play, Lose]
 };
 
 let game = new Phaser.Game(config);

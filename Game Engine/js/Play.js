@@ -88,23 +88,14 @@ class Play extends Phaser.Scene {
     // Check if any bugs have reached the right side of the screen
     if (this.bugs.getChildren().some(bug => bug.x >= this.game.config.width)) {
         // If so, end the game
-        this.gameOver();
+        this.scene.start(`lose`);
     }
     if (this.bugs2.getChildren().some(bug2 => bug2.x >= this.game.config.width)) {
       // If so, end the game
-      this.gameOver();
+      this.scene.start(`lose`);
   }
   }
 
-  // Ends the game
-  gameOver() {
-    // Stop spawning bugs
-    this.timerEvent.remove();
-    // Pause physics simulation
-    this.physics.pause();
-    // Display game over text
-    this.add.text(250, 250, 'Game Over', { fontSize: '64px', fill: '#FFF' });
-  }
 }
 
 
