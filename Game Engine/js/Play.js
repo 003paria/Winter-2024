@@ -25,8 +25,6 @@ class Play extends Phaser.Scene {
       key: 'bug',
       // How many
       quantity: 2,
-      // Collide with the "walls"
-      // collideWorldBounds: true,
       // Set the initial velocity of the bugs to move towards the right
       velocityX: 100, // Adjust velocity as needed
       // How much to they bounce when they hit something?
