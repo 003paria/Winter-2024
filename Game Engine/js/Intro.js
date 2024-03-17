@@ -12,11 +12,11 @@ class Intro extends Phaser.Scene {
     // Add intro background image
     this.add.image(0, 0, 'intro').setOrigin(0);    
 
-    // Switch to the play scene on complete
-    this.load.on(`complete`, () => {
+    // Listen for keyboard input
+    this.input.keyboard.once('keydown-ENTER', () => {
+      // Switch to the play scene
       this.scene.start(`play`);
     });
-
 
   }
 }

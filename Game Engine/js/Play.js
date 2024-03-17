@@ -21,7 +21,7 @@ class Play extends Phaser.Scene {
     this.add.image(0, 0, 'background').setOrigin(0);
     // Create a group of bugs with some basic physics configuration
     this.bugs = this.physics.add.group({
-      // Image key to use
+      // Image key to ssssssuse
       key: 'bug',
       // How many
       quantity: 2,
