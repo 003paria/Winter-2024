@@ -16,10 +16,19 @@ class Play extends Phaser.Scene {
   create() {
     // Add background image
     this.add.image(0, 0, 'background').setOrigin(0);
-    
-    // Show the input field
-  document.getElementById('inputField').style.display = 'block';
+   
+    // DOM 
+    this.nameInput = this.add.dom(640, 360).createFromCache("form");
+    this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
+    this.returnKey.on("down", event => {
+        let name = this.nameInput.getChildByName("name");
+        if(name.value != "") {
+            this.message.setText("Hello, " + name.value);
+            name.value = "";
+        }
+    });
+    //
     // Create a group of bugs with some basic physics configuration
     this.bugs = this.physics.add.group({
       // Image key 

@@ -21,7 +21,9 @@ class Boot extends Phaser.Scene {
     // Load Play background image
     this.load.image('background', 'assets/images/background1.png');  
     // Load Gameover Image
-    this.load.image('gameover', 'assets/images/gameover.png');   
+    this.load.image('gameover', 'assets/images/gameover.png');
+    // Load HTML file 
+    this.load.html('form', 'form.html');   
 
     // Switch to the intro scene on complete
     this.load.on(`complete`, () => {
