@@ -27,20 +27,15 @@ class Play extends Phaser.Scene {
       velocityX: 100
     });
 
-    // Create a group of bug2 (faster bugs)
-    this.bugs2 = this.physics.add.group({
-      key: 'bug2',
-      quantity: 3,
-      velocityX: 200
-  });
-
    // Initialize score
     this.score = 0;
     this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' }); 
+    
     // Create a timer event to spawn bugs every half second
     this.timerEvent = this.time.addEvent({ delay: 500, callback: this.spawnBug, callbackScope: this, loop: true });
-    // Listen for mouse clicks to smash bugs
-    this.input.on('pointerdown', this.smashBug, this);
+
+    // Listen for keyboard input
+    this.input.keyboard.on('keydown', this.checkKeyword, this);
     console.log();
   }
   
@@ -48,43 +43,38 @@ class Play extends Phaser.Scene {
   spawnBug() {
   // Calculate the Y position randomly within the game height
   let y = Phaser.Math.Between(50, this.game.config.height - 50);  
-  // Create bugs and bug2 at the far left edge of the screen with the random Y position
+  // Create bugs at the far left edge of the screen with the random Y position
   this.bugs.create(0, y, 'bug');
-  this.bugs2.create(0, y, 'bug2');
   }
 
-  // Called when a bug is smashed
-  smashBug(pointer) {
-    // if the pointer is on the "bound" of one of the bugs, then destroy the bug and add a point to the score. 
-    this.bugs.children.iterate(bug => {
-        if (bug && bug.getBounds && Phaser.Geom.Rectangle.ContainsPoint(bug.getBounds(), pointer)) {
-            bug.destroy();
-            this.score += 1;
-            this.scoreText.setText('Score: ' + this.score);
-        }
-    });
-    // Same thing but for bug2 
-    this.bugs2.children.iterate(bug2 => {
-      if (bug2 && bug2.getBounds && Phaser.Geom.Rectangle.ContainsPoint(bug2.getBounds(), pointer)) {
-          bug2.destroy();
+  // Called when a the typed word matches the keyword 
+  checkKeyword(event){
+    const typedKeyword = event.key.toLowerCase(); // Convert typed input to lowercase
+    const correctKeyword = 'if'; // just to try things right now 
+
+    // Check if the typed word matches the correct keyword 
+    if(typedKeyword === correctKeyword) {
+      // Destroy the bug and update the score 
+      this.bugs.children.iterate(bug => {
+        if(bug.getBounds().contains(event.x,event.y)){
+          bug.destroy();
           this.score += 1;
-          this.scoreText.setText('Score: ' + this.score);
-      }
-  });    
-}
+          this.scoreText.setText(`Score: ${this.score}`);
+        }
+      });
+    }
+  } 
+
 
   // Called every frame
   update() {
-    // Check if any bugs have reached the right side of the screen
-    if (this.bugs.getChildren().some(bug => bug.x >= this.game.config.width)) {
-        // If so, end the game
-        this.scene.start(`lose`);
-    }
-    // Same thing but for Bug2 
-    if (this.bugs2.getChildren().some(bug2 => bug2.x >= this.game.config.width)) {
-      // If so, end the game
-      this.scene.start(`lose`);
-  }
+    // Continuously check if bugs have reached the right side of the screen
+    this.bugs.children.iterate(bug => {
+      if (bug.x >= this.game.config.width) {
+        // Bug escaped! Switch to the "lose" scene
+        this.scene.start('lose');
+      }
+    });
   }
 }
 
