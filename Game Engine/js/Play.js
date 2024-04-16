@@ -1,6 +1,6 @@
 /**
 In this game, players take on the role of a bug exterminator tasked with eliminating pesky bugs infesting a computer program. 
-The bugs are represented by cartoon insects crawling around the code, and players must squash them before they cause havoc.
+The bugs are represented by cartoon insects crawling around the code, and players must squash them by typing the right keyword before they cause havoc.
 */
 
 class Play extends Phaser.Scene {
@@ -21,8 +21,6 @@ class Play extends Phaser.Scene {
     this.bugs = this.physics.add.group({
       // Image key 
       key: 'bug',
-      // How many
-      quantity: 3,
       // Set the initial velocity of the bugs to move towards the right
       velocityX: 100
     });
@@ -33,40 +31,47 @@ class Play extends Phaser.Scene {
     
     // Create a timer event to spawn bugs every half second
     this.timerEvent = this.time.addEvent({ delay: 500, callback: this.spawnBug, callbackScope: this, loop: true });
-
+    
+    // Create a combo for the correct keyword
+    this.correctCombo = this.input.keyboard.createCombo('if', { maxKeyDelay: 1000 });
     // Listen for keyboard input
-    this.input.keyboard.on('keydown', this.checkKeyword, this);
+    this.input.keyboard.on('keycombomatch', this.onKeywordMatch, this);
   }
   
   // Function to spawn a bug
   spawnBug() {
   // Calculate the Y position randomly within the game height
-  let y = Phaser.Math.Between(50, this.game.config.height - 50);  
+  let y = Phaser.Math.Between(50, this.game.config.height - 50); 
+  console.log('Bug spawned at Y:', y); 
   // Create bugs at the far left edge of the screen with the random Y position
   this.bugs.create(0, y, 'bug');
   }
 
+
   // Called when a the typed word matches the keyword 
-  checkKeyword(event){
-    const typedKeyword = event.key.toLowerCase(); // Convert typed input to lowercase
-    const correctKeyword = 'if'; // just to try things right now 
+// Called when a the typed word matches the keyword 
+onKeywordMatch() {
+  // Get the matched combo from the combo object
+  const typedKeyword = this.correctCombo.keyCodes.map(keyCode => String.fromCharCode(keyCode)).join('').toLowerCase();
+  
+  // Log the typed keyword
+  console.log(`Typed keyword: ${typedKeyword}`);
 
-    console.log(`Typed: ${typedKeyword}, Correct: ${correctKeyword}`); // debugging
+  const correctKeyword = 'if'; // Replace with your chosen keyword
 
-    // Check if the typed word matches the correct keyword 
-    if(typedKeyword === correctKeyword) {
-      // Destroy the bug and update the score 
-      this.bugs.children.iterate(bug => { 
-        if(bug.getBounds().contains(event.x,event.y)){
-          bug.destroy();
-          this.score += 1;
-          this.scoreText.setText(`Score: ${this.score}`);
-        }
-      });
+  // Check if the typed word matches the correct keyword
+  if (typedKeyword === correctKeyword) {
+    // Destroy the first bug in the group and update the score
+    let bug = this.bugs.getFirstAlive();
+    if (bug) {
+      bug.destroy();
+      this.score += 10; // Adjust the score as needed
+      this.scoreText.setText(`Score: ${this.score}`);
     }
-  } 
+  }
+}
 
-
+  
   // Called every frame
   update() {
     // Continuously check if bugs have reached the right side of the screen
