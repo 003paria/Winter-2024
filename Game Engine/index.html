@@ -8,6 +8,14 @@
 
     <!-- CSS stylesheet(s) -->
     <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <style>
+      #inputField {
+          display: none;
+          position: absolute;
+          top: 10px;
+          right: 10px;
+      }
+    </style>
 
     <!-- Library script(s) go here -->
     <script src="//cdn.jsdelivr.net/npm/phaser@3.53.1/dist/phaser.min.js"></script>
@@ -15,7 +23,8 @@
 
   <body>
     <!-- HTML would go here if needed. -->
-
+    <input type="text" id="inputField" placeholder="Type here...">
+    <div id="phaser-example"></div>
     <!-- My script(s) -->
     <script src="js/Boot.js"></script>
     <script src="js/Intro.js"></script>

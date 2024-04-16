@@ -16,6 +16,9 @@ class Play extends Phaser.Scene {
   create() {
     // Add background image
     this.add.image(0, 0, 'background').setOrigin(0);
+    
+    // Show the input field
+  document.getElementById('inputField').style.display = 'block';
 
     // Create a group of bugs with some basic physics configuration
     this.bugs = this.physics.add.group({
@@ -30,7 +33,7 @@ class Play extends Phaser.Scene {
     this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' }); 
     
     // Create a timer event to spawn bugs every half second
-    this.timerEvent = this.time.addEvent({ delay: 500, callback: this.spawnBug, callbackScope: this, loop: true });
+    this.timerEvent = this.time.addEvent({ delay: 700, callback: this.spawnBug, callbackScope: this, loop: true });
     
     // Create a combo for the correct keyword
     this.correctCombo = this.input.keyboard.createCombo('if', { maxKeyDelay: 1000 });
@@ -49,26 +52,25 @@ class Play extends Phaser.Scene {
 
 
   // Called when a the typed word matches the keyword 
-// Called when a the typed word matches the keyword 
-onKeywordMatch() {
-  // Get the matched combo from the combo object
-  const typedKeyword = this.correctCombo.keyCodes.map(keyCode => String.fromCharCode(keyCode)).join('').toLowerCase();
-  
-  // Log the typed keyword
-  console.log(`Typed keyword: ${typedKeyword}`);
+  onKeywordMatch() {
+    // Get the matched combo from the combo object
+    const typedKeyword = this.correctCombo.keyCodes.map(keyCode => String.fromCharCode(keyCode)).join('').toLowerCase();
+    
+    // Log the typed keyword
+    console.log(`Typed keyword: ${typedKeyword}`);
 
-  const correctKeyword = 'if'; // Replace with your chosen keyword
+    const correctKeyword = 'if'; // Replace with your chosen keyword
 
-  // Check if the typed word matches the correct keyword
-  if (typedKeyword === correctKeyword) {
-    // Destroy the first bug in the group and update the score
-    let bug = this.bugs.getFirstAlive();
-    if (bug) {
-      bug.destroy();
-      this.score += 10; // Adjust the score as needed
-      this.scoreText.setText(`Score: ${this.score}`);
+    // Check if the typed word matches the correct keyword
+    if (typedKeyword === correctKeyword) {
+      // Destroy the first bug in the group and update the score
+      let bug = this.bugs.getFirstAlive();
+      if (bug) {
+        bug.destroy();
+        this.score += 10; // Adjust the score as needed
+        this.scoreText.setText(`Score: ${this.score}`);
+      }
     }
-  }
 
   // Remove the old combo
   this.input.keyboard.removeCapture('if');
