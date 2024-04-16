@@ -69,6 +69,12 @@ onKeywordMatch() {
       this.scoreText.setText(`Score: ${this.score}`);
     }
   }
+
+  // Remove the old combo
+  this.input.keyboard.removeCapture('if');
+
+  // Create a new combo for the correct keyword
+  this.correctCombo = this.input.keyboard.createCombo('if', { maxKeyDelay: 1000 });
 }
 
   
