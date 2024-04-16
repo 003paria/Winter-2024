@@ -36,7 +36,6 @@ class Play extends Phaser.Scene {
 
     // Listen for keyboard input
     this.input.keyboard.on('keydown', this.checkKeyword, this);
-    console.log();
   }
   
   // Function to spawn a bug
@@ -52,10 +51,12 @@ class Play extends Phaser.Scene {
     const typedKeyword = event.key.toLowerCase(); // Convert typed input to lowercase
     const correctKeyword = 'if'; // just to try things right now 
 
+    console.log(`Typed: ${typedKeyword}, Correct: ${correctKeyword}`); // debugging
+
     // Check if the typed word matches the correct keyword 
     if(typedKeyword === correctKeyword) {
       // Destroy the bug and update the score 
-      this.bugs.children.iterate(bug => {
+      this.bugs.children.iterate(bug => { 
         if(bug.getBounds().contains(event.x,event.y)){
           bug.destroy();
           this.score += 1;
