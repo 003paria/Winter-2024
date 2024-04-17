@@ -19,9 +19,6 @@ let config = {
       debug: false
     }
   },
-  dom: {
-    createContainer: true
-  },
   scene: [Boot, Intro, Play, Lose]
 };
 

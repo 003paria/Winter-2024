@@ -13,8 +13,6 @@ class Boot extends Phaser.Scene {
 
   // Loads the image assets then switches to the intro scene on completion.
   preload() {
-    // Load HTML file 
-    this.load.html('form', 'assets/form/form.html');   
     // Load bug images 
     this.load.image('bug', 'assets/images/bug.png');
     this.load.image('bug2', 'assets/images/bug2.png');
