@@ -29,7 +29,7 @@ class Play extends Phaser.Scene {
       // Image key 
       key: 'bug2',
       // Set the initial velocity of the bugs to move towards the right
-      velocityX: 200
+      velocityX: 150
     });
 
    // Initialize score
@@ -41,7 +41,7 @@ class Play extends Phaser.Scene {
     
     // Create a combo for the correct keyword
     this.correctCombo1 = this.input.keyboard.createCombo('if', { maxKeyDelay: 1000 });
-    this.correctCombo2 = this.input.keyboard.createCombo('byte', { maxKeyDelay: 1000 });
+
     // Listen for keyboard input
     this.input.keyboard.on('keycombomatch', this.onKeywordMatch, this);
   }
@@ -73,14 +73,12 @@ class Play extends Phaser.Scene {
   onKeywordMatch() {
     // Get the matched combo from the combo object
     const typedKeyword = this.correctCombo1.keyCodes.map(keyCode => String.fromCharCode(keyCode)).join('').toLowerCase();
-    const typedKeyword2 = this.correctCombo2.keyCodes.map(keyCode => String.fromCharCode(keyCode)).join('').toLowerCase();
-    
+
     // Log the typed keyword
     console.log(`Typed keyword: ${typedKeyword}`);
-    console.log(`Typed keyword: ${typedKeyword2}`);
 
-    const correctKeyword1 = 'if'; // Replace with your chosen keyword
-    const correctKeyword2 = 'byte';
+    const correctKeyword1 = 'if'; 
+
 
     // Check if the typed word matches the correct keyword
     if (typedKeyword === correctKeyword1) {
@@ -91,24 +89,14 @@ class Play extends Phaser.Scene {
         this.score += 10; // Adjust the score as needed
         this.scoreText.setText(`Score: ${this.score}`);
       }
-    } else if (typedKeyword2 === correctKeyword2){
-      // Destroy the first bug2 in the group and update the score
-      let bug2 = this.bugs2.getFirstAlive();
-      if (bug2) {
-        bug2.destroy();
-        this.score += 20; // Adjust the score as needed
-        this.scoreText.setText(`Score: ${this.score}`);
-      } 
     }
-    
 
   // Remove the old combos
   this.input.keyboard.removeCapture('if');
-  this.input.keyboard.removeCapture('byte');
 
   // Create a new combo for the correct keyword
   this.correctCombo1 = this.input.keyboard.createCombo('if', { maxKeyDelay: 1000 });
-  this.correctCombo2 = this.input.keyboard.createCombo('byte', { maxKeyDelay: 1000 });
+
 }
 
   
@@ -121,8 +109,8 @@ class Play extends Phaser.Scene {
         this.scene.start('lose');
       }
     });
-
-    this.bugs.children.iterate(bug2 => {
+    
+    this.bugs2.children.iterate(bug2 => {
       if (bug2.x >= this.game.config.width) {
         // Bug escaped! Switch to the "lose" scene
         this.scene.start('lose');
