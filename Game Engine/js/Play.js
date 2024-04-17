@@ -41,7 +41,7 @@ class Play extends Phaser.Scene {
     
     // Create a combo for the correct keyword
     this.correctCombo1 = this.input.keyboard.createCombo('if', { maxKeyDelay: 1000 });
-
+    this.correctCombo2 = this.input.keyboard.createCombo('else', { maxKeyDelay: 1000 });
     // Listen for keyboard input
     this.input.keyboard.on('keycombomatch', this.onKeywordMatch, this);
   }
@@ -73,12 +73,14 @@ class Play extends Phaser.Scene {
   onKeywordMatch() {
     // Get the matched combo from the combo object
     const typedKeyword = this.correctCombo1.keyCodes.map(keyCode => String.fromCharCode(keyCode)).join('').toLowerCase();
+    // Get the matched combo from the combo object
+    const typedKeyword2 = this.correctCombo2.keyCodes.map(keyCode => String.fromCharCode(keyCode)).join('').toLowerCase();
 
     // Log the typed keyword
     console.log(`Typed keyword: ${typedKeyword}`);
 
     const correctKeyword1 = 'if'; 
-
+    const correctKeyword2 = 'else'; 
 
     // Check if the typed word matches the correct keyword
     if (typedKeyword === correctKeyword1) {
@@ -89,14 +91,24 @@ class Play extends Phaser.Scene {
         this.score += 10; // Adjust the score as needed
         this.scoreText.setText(`Score: ${this.score}`);
       }
-    }
+    }  else if (typedKeyword2 === correctKeyword2) {
+      // Destroy the first bug in the group and update the score
+      let bug2 = this.bugs2.getFirstAlive();
+      if (bug2) {
+        bug2.destroy();
+        this.score += 10; // Adjust the score as needed
+        this.scoreText.setText(`Score: ${this.score}`);
+      }
+    } 
+
 
   // Remove the old combos
   this.input.keyboard.removeCapture('if');
+  this.input.keyboard.removeCapture('else');
 
   // Create a new combo for the correct keyword
   this.correctCombo1 = this.input.keyboard.createCombo('if', { maxKeyDelay: 1000 });
-
+  this.correctCombo1 = this.input.keyboard.createCombo('else', { maxKeyDelay: 1000 });
 }
 
   
@@ -109,7 +121,7 @@ class Play extends Phaser.Scene {
         this.scene.start('lose');
       }
     });
-    
+
     this.bugs2.children.iterate(bug2 => {
       if (bug2.x >= this.game.config.width) {
         // Bug escaped! Switch to the "lose" scene
