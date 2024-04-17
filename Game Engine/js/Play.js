@@ -91,15 +91,24 @@ class Play extends Phaser.Scene {
         this.score += 10; // Adjust the score as needed
         this.scoreText.setText(`Score: ${this.score}`);
       }
-    } elif(typedKeyword2 === correctKeyword2){
-
+    } else if (typedKeyword2 === correctKeyword2){
+      // Destroy the first bug2 in the group and update the score
+      let bug2 = this.bugs2.getFirstAlive();
+      if (bug2) {
+        bug2.destroy();
+        this.score += 20; // Adjust the score as needed
+        this.scoreText.setText(`Score: ${this.score}`);
+      } 
     }
+    
 
-  // Remove the old combo
+  // Remove the old combos
   this.input.keyboard.removeCapture('if');
+  this.input.keyboard.removeCapture('byte');
 
   // Create a new combo for the correct keyword
-  this.correctCombo = this.input.keyboard.createCombo('if', { maxKeyDelay: 1000 });
+  this.correctCombo1 = this.input.keyboard.createCombo('if', { maxKeyDelay: 1000 });
+  this.correctCombo2 = this.input.keyboard.createCombo('byte', { maxKeyDelay: 1000 });
 }
 
   
@@ -108,6 +117,13 @@ class Play extends Phaser.Scene {
     // Continuously check if bugs have reached the right side of the screen
     this.bugs.children.iterate(bug => {
       if (bug.x >= this.game.config.width) {
+        // Bug escaped! Switch to the "lose" scene
+        this.scene.start('lose');
+      }
+    });
+
+    this.bugs.children.iterate(bug2 => {
+      if (bug2.x >= this.game.config.width) {
         // Bug escaped! Switch to the "lose" scene
         this.scene.start('lose');
       }
