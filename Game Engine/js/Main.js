@@ -21,7 +21,7 @@ let config = {
   },
   dom: {
     createContainer: true
-},
+  },
   scene: [Boot, Intro, Play, Lose]
 };
 
