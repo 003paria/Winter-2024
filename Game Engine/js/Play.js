@@ -36,8 +36,9 @@ class Play extends Phaser.Scene {
     this.score = 0;
     this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' }); 
     
-    // Create a timer event to spawn bugs every half second
+    // Create a timer event to spawn bugs wiht different delay 
     this.timerEvent = this.time.addEvent({ delay: 700, callback: this.spawnBug, callbackScope: this, loop: true });
+    this.timerEvent2 = this.time.addEvent({ delay: 1200, callback: this.spawnBug2, callbackScope: this, loop: true });
 
     // Create an array of correct keywords
     this.correctKeywords = ['if', 'else'];
@@ -56,7 +57,12 @@ class Play extends Phaser.Scene {
   console.log('Bug spawned at Y:', y); 
   // Create bugs at the far left edge of the screen with the random Y position
   this.bugs.create(0, y, 'bug');
+  }
 
+  spawnBug2() {
+    // Calculate the Y position randomly within the game height
+    let y = Phaser.Math.Between(50, this.game.config.height - 50); 
+    console.log('Bug spawned at Y:', y); 
     // Logic to spawn bug2 based on game state
     if (true) {
       let bug2 = this.bugs2.create(0, y, 'bug2');
@@ -68,8 +74,8 @@ class Play extends Phaser.Scene {
           yoyo: true, // go back to original position
           repeat: -1 // repeat forever
       });
-  }
-  }
+  }    
+}
 
   // Called when a key is pressed
   onKeyPressed(event) {
@@ -113,7 +119,7 @@ class Play extends Phaser.Scene {
         this.scene.start('lose');
       }
     });
-    
+
     this.bugs2.children.iterate(bug2 => {
       if (bug2.x >= this.game.config.width) {
         // Bug escaped! Switch to the "lose" scene
