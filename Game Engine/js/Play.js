@@ -38,7 +38,9 @@ class Play extends Phaser.Scene {
     
     // Create a timer event to spawn bugs wiht different delay 
     this.timerEvent = this.time.addEvent({ delay: 700, callback: this.spawnBug, callbackScope: this, loop: true });
-    this.timerEvent2 = this.time.addEvent({ delay: 1200, callback: this.spawnBug2, callbackScope: this, loop: true });
+
+    // Create a timer event to start spawning bug2 after the delay
+    this.time.delayedCall(10000, this.startSpawningBug2, [], this);
 
     // Create an array of correct keywords
     this.correctKeywords = ['if', 'else'];
@@ -76,6 +78,12 @@ class Play extends Phaser.Scene {
       });
   }    
 }
+
+  // Function to start spawning bug2
+  startSpawningBug2() {   
+    // Create a timer event for bug2 with the desired spawn interval
+    this.bug2TimerEvent = this.time.addEvent({ delay: 1200, callback: this.spawnBug2, callbackScope: this, loop: true });
+  }
 
   // Called when a key is pressed
   onKeyPressed(event) {
