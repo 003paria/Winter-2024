@@ -40,10 +40,19 @@ class Play extends Phaser.Scene {
     this.timerEvent = this.time.addEvent({ delay: 700, callback: this.spawnBug, callbackScope: this, loop: true });
     
     // Create a combo for the correct keyword
-    this.correctCombo1 = this.input.keyboard.createCombo('if', { maxKeyDelay: 1000 });
-    this.correctCombo2 = this.input.keyboard.createCombo('else', { maxKeyDelay: 1000 });
+    //this.correctCombo1 = this.input.keyboard.createCombo('if', { maxKeyDelay: 1000 });
+
     // Listen for keyboard input
-    this.input.keyboard.on('keycombomatch', this.onKeywordMatch, this);
+    //this.input.keyboard.on('keycombomatch', this.onKeywordMatch, this);
+
+    // Create an array of correct keywords
+    this.correctKeyword1 = 'if';
+
+    // Initialize the typed input
+    this.typedInput = '';
+
+    // Listen for keyboard input
+    this.input.keyboard.on('keydown', this.onKeyPressed, this);
   }
   
   // Function to spawn a bug
@@ -69,21 +78,17 @@ class Play extends Phaser.Scene {
   }
 
 
-  // Called when a the typed word matches the keyword 
-  onKeywordMatch() {
-    // Get the matched combo from the combo object
-    const typedKeyword = this.correctCombo1.keyCodes.map(keyCode => String.fromCharCode(keyCode)).join('').toLowerCase();
-    // Get the matched combo from the combo object
-    const typedKeyword2 = this.correctCombo2.keyCodes.map(keyCode => String.fromCharCode(keyCode)).join('').toLowerCase();
+  // Called when a key is pressed
+  onKeyPressed(event) {
+    // Get the typed key
+    const typedKey = event.key.toLowerCase();
 
-    // Log the typed keyword
-    console.log(`Typed keyword: ${typedKeyword}`);
+    // Append the typed key to the input
+    this.typedInput += typedKey;
+    console.log(this.typedInput)
 
-    const correctKeyword1 = 'if'; 
-    const correctKeyword2 = 'else'; 
-
-    // Check if the typed word matches the correct keyword
-    if (typedKeyword === correctKeyword1) {
+    // Check if the typed input ends with the correct keyword "if"
+    if (this.typedInput.endsWith(this.correctKeyword1)) {
       // Destroy the first bug in the group and update the score
       let bug = this.bugs.getFirstAlive();
       if (bug) {
@@ -91,25 +96,12 @@ class Play extends Phaser.Scene {
         this.score += 10; // Adjust the score as needed
         this.scoreText.setText(`Score: ${this.score}`);
       }
-    }  else if (typedKeyword2 === correctKeyword2) {
-      // Destroy the first bug in the group and update the score
-      let bug2 = this.bugs2.getFirstAlive();
-      if (bug2) {
-        bug2.destroy();
-        this.score += 10; // Adjust the score as needed
-        this.scoreText.setText(`Score: ${this.score}`);
-      }
-    } 
 
+      // Clear the typed input
+      this.typedInput = '';
+    }
+  }
 
-  // Remove the old combos
-  this.input.keyboard.removeCapture('if');
-  this.input.keyboard.removeCapture('else');
-
-  // Create a new combo for the correct keyword
-  this.correctCombo1 = this.input.keyboard.createCombo('if', { maxKeyDelay: 1000 });
-  this.correctCombo1 = this.input.keyboard.createCombo('else', { maxKeyDelay: 1000 });
-}
 
   
   // Called every frame
