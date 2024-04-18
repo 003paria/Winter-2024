@@ -38,15 +38,9 @@ class Play extends Phaser.Scene {
     
     // Create a timer event to spawn bugs every half second
     this.timerEvent = this.time.addEvent({ delay: 700, callback: this.spawnBug, callbackScope: this, loop: true });
-    
-    // Create a combo for the correct keyword
-    //this.correctCombo1 = this.input.keyboard.createCombo('if', { maxKeyDelay: 1000 });
-
-    // Listen for keyboard input
-    //this.input.keyboard.on('keycombomatch', this.onKeywordMatch, this);
 
     // Create an array of correct keywords
-    this.correctKeyword1 = 'if';
+    this.correctKeywords = ['if', 'else'];
 
     // Initialize the typed input
     this.typedInput = '';
@@ -77,7 +71,6 @@ class Play extends Phaser.Scene {
   }
   }
 
-
   // Called when a key is pressed
   onKeyPressed(event) {
     // Get the typed key
@@ -88,7 +81,7 @@ class Play extends Phaser.Scene {
     console.log(this.typedInput)
 
     // Check if the typed input ends with the correct keyword "if"
-    if (this.typedInput.endsWith(this.correctKeyword1)) {
+    if (this.typedInput.endsWith(this.correctKeywords[0])) {
       // Destroy the first bug in the group and update the score
       let bug = this.bugs.getFirstAlive();
       if (bug) {
@@ -96,14 +89,21 @@ class Play extends Phaser.Scene {
         this.score += 10; // Adjust the score as needed
         this.scoreText.setText(`Score: ${this.score}`);
       }
-
+      // Clear the typed input
+      this.typedInput = '';
+    } else if (this.typedInput.endsWith(this.correctKeywords[1])) {
+      // Destroy the first bug in the group and update the score
+      let bug = this.bugs2.getFirstAlive();
+      if (bug) {
+        bug.destroy();
+        this.score += 10; // Adjust the score as needed
+        this.scoreText.setText(`Score: ${this.score}`);
+      }
       // Clear the typed input
       this.typedInput = '';
     }
   }
 
-
-  
   // Called every frame
   update() {
     // Continuously check if bugs have reached the right side of the screen
@@ -113,7 +113,7 @@ class Play extends Phaser.Scene {
         this.scene.start('lose');
       }
     });
-
+    
     this.bugs2.children.iterate(bug2 => {
       if (bug2.x >= this.game.config.width) {
         // Bug escaped! Switch to the "lose" scene
