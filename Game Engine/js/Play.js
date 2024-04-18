@@ -64,19 +64,19 @@ class Play extends Phaser.Scene {
   spawnBug2() {
     // Calculate the Y position randomly within the game height
     let y = Phaser.Math.Between(50, this.game.config.height - 50); 
-    console.log('Bug spawned at Y:', y); 
+    console.log('Bug2 spawned at Y:', y); 
+
     // Logic to spawn bug2 based on game state
-    if (true) {
       let bug2 = this.bugs2.create(0, y, 'bug2');
       this.tweens.add({
           targets: bug2,
           y: '+=100', // move down by 100
-          ease: 'Power1', // 'Cubic', 'Elastic', 'Bounce', 'Back'
+          ease: 'Power1', 
           duration: 1000,
           yoyo: true, // go back to original position
           repeat: -1 // repeat forever
       });
-  }    
+    
 }
 
   // Function to start spawning bug2
