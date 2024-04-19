@@ -31,6 +31,13 @@ class Play extends Phaser.Scene {
       // Set the initial velocity of the bugs to move towards the right
       velocityX: 150
     });
+    // Create a third group of Bugs !! 
+    this.bugs3 = this.physics.add.group({
+      // Image key 
+      key: 'bug2',
+      // Set the initial velocity of the bugs to move towards the right
+      velocityX: 200
+    });
 
    // Initialize score
     this.score = 0;
@@ -38,6 +45,8 @@ class Play extends Phaser.Scene {
     
     // Create a timer event to spawn bugs wiht different delay 
     this.timerEvent = this.time.addEvent({ delay: 700, callback: this.spawnBug, callbackScope: this, loop: true });
+    this.timerEvent3 = this.time.addEvent({ delay: 700, callback: this.spawnBug3, callbackScope: this, loop: true });
+
 
     // Create a timer event to start spawning bug2 after the delay
     this.time.delayedCall(10000, this.startSpawningBug2, [], this);
@@ -77,6 +86,25 @@ class Play extends Phaser.Scene {
           repeat: -1 // repeat forever
       });
     
+}
+
+spawnBug3() {
+  // Calculate the Y position randomly within the game height
+  let y = Phaser.Math.Between(50, this.game.config.height - 50);
+  console.log('Bug3 spawned at Y:', y);
+
+  // Create bug3 at the far left edge of the screen with the random Y position
+  let bug3 = this.bugs.create(0, y, 'bug2'); // Replace 'bug3' with your actual texture key
+
+  // Custom wavy movement using sine wave
+  this.tweens.add({
+      targets: bug3,
+      y: y + 50, // Adjust the amplitude of the wave
+      duration: 1000, // Duration of one wave cycle
+      repeat: -1, // Repeat indefinitely
+      yoyo: true, // Move back and forth
+      ease: 'Sine.easeInOut' // Use sine wave easing
+  });
 }
 
   // Function to start spawning bug2
