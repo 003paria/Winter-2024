@@ -34,7 +34,7 @@ class Play extends Phaser.Scene {
     // Create a third group of Bugs !! 
     this.bugs3 = this.physics.add.group({
       // Image key 
-      key: 'bug2',
+      key: 'bug33',
       // Set the initial velocity of the bugs to move towards the right
       velocityX: 200
     });
@@ -94,7 +94,7 @@ spawnBug3() {
   console.log('Bug3 spawned at Y:', y);
 
   // Create bug3 at the far left edge of the screen with the random Y position
-  let bug3 = this.bugs.create(0, y, 'bug2'); // Replace 'bug3' with your actual texture key
+  let bug3 = this.bugs.create(0, y, 'bug33');
 
   // Custom wavy movement using sine wave
   this.tweens.add({

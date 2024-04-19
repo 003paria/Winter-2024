@@ -16,6 +16,7 @@ class Boot extends Phaser.Scene {
     // Load bug images 
     this.load.image('bug', 'assets/images/bug.png');
     this.load.image('bug2', 'assets/images/bug2.png');
+    this.load.image('bug33', 'assets/images/bug33.png');
     // Load Intro image 
     this.load.image('intro', 'assets/images/intro.png' );
     // Load Play background image
