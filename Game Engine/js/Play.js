@@ -47,7 +47,7 @@ class Play extends Phaser.Scene {
     this.timerEvent = this.time.addEvent({ delay: 700, callback: this.spawnBug, callbackScope: this, loop: true });
 
     // Create a timer event to start spawning bug2 after the delay
-    this.time.delayedCall(7000, this.startSpawningBug2, [], this);
+    this.time.delayedCall(70000, this.startSpawningBug2, [], this);
     this.time.delayedCall(1000, this.startSpawningBug3, [], this);
 
     // Create an array of correct keywords
@@ -92,7 +92,7 @@ class Play extends Phaser.Scene {
     console.log('Bug3 spawned at Y:', y);
 
     // Create bug3 at the far left edge of the screen with the random Y position
-    let bug3 = this.bugs.create(0, y, 'bug3');
+    let bug3 = this.bugs3.create(0, y, 'bug3');
 
     // Custom wavy movement using sine wave
     this.tweens.add({
@@ -126,30 +126,30 @@ class Play extends Phaser.Scene {
     this.typedInput += typedKey;
     console.log(this.typedInput)
 
-    // Check if the typed input ends with the correct keyword "if"
-    if (this.typedInput.endsWith('if')) {
-      // Destroy the first bug in the group and update the score
+    // Check if the typed input ends with the correct keyword "byte"
+    if (this.typedInput.endsWith('byte')) {
+      // Destroy the first bug in the bugs3 group and update the score
+      let bug = this.bugs3.getFirstAlive();
+      if (bug) {
+        bug.destroy();
+        this.score += 15; // Adjust the score as needed
+        this.scoreText.setText(`Score: ${this.score}`);
+      }
+      // Clear the typed input
+      this.typedInput = '';
+    } else if (this.typedInput.endsWith('if')) {
+      // Destroy the first bug in the bugs group and update the score
       let bug = this.bugs.getFirstAlive();
       if (bug) {
         bug.destroy();
-        this.score += 10; // Adjust the score as needed
+        this.score += 5; // Adjust the score as needed
         this.scoreText.setText(`Score: ${this.score}`);
       }
       // Clear the typed input
       this.typedInput = '';
     } else if (this.typedInput.endsWith('else')) {
-      // Destroy the first bug in the group and update the score
+      // Destroy the first bug in the bugs2 group and update the score
       let bug = this.bugs2.getFirstAlive();
-      if (bug) {
-        bug.destroy();
-        this.score += 10; // Adjust the score as needed
-        this.scoreText.setText(`Score: ${this.score}`);
-      }
-      // Clear the typed input
-      this.typedInput = '';
-    } else if (this.typedInput.endsWith('hi')) {
-      // Destroy the first bug in the group and update the score
-      let bug = this.bugs3.getFirstAlive();
       if (bug) {
         bug.destroy();
         this.score += 10; // Adjust the score as needed
@@ -159,6 +159,7 @@ class Play extends Phaser.Scene {
       this.typedInput = '';
     }
   }
+
 
   // Called every frame
   update() {
