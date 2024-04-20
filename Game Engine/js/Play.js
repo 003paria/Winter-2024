@@ -29,12 +29,12 @@ class Play extends Phaser.Scene {
       // Image key 
       key: 'bug2',
       // Set the initial velocity of the bugs to move towards the right
-      velocityX: 150
+      velocityX: 100
     });
     // Create a third group of Bugs !! 
     this.bugs3 = this.physics.add.group({
       // Image key 
-      key: 'bug33',
+      key: 'bug3',
       // Set the initial velocity of the bugs to move towards the right
       velocityX: 200
     });
@@ -45,14 +45,13 @@ class Play extends Phaser.Scene {
     
     // Create a timer event to spawn bugs wiht different delay 
     this.timerEvent = this.time.addEvent({ delay: 700, callback: this.spawnBug, callbackScope: this, loop: true });
-    this.timerEvent3 = this.time.addEvent({ delay: 700, callback: this.spawnBug3, callbackScope: this, loop: true });
-
 
     // Create a timer event to start spawning bug2 after the delay
-    this.time.delayedCall(10000, this.startSpawningBug2, [], this);
+    this.time.delayedCall(7000, this.startSpawningBug2, [], this);
+    this.time.delayedCall(1000, this.startSpawningBug3, [], this);
 
     // Create an array of correct keywords
-    this.correctKeywords = ['if', 'else'];
+    this.correctKeywords = ['if', 'else', 'byte'];
 
     // Initialize the typed input
     this.typedInput = '';
@@ -75,7 +74,6 @@ class Play extends Phaser.Scene {
     let y = Phaser.Math.Between(50, this.game.config.height - 50); 
     console.log('Bug2 spawned at Y:', y); 
 
-    // Logic to spawn bug2 based on game state
       let bug2 = this.bugs2.create(0, y, 'bug2');
       this.tweens.add({
           targets: bug2,
@@ -88,29 +86,35 @@ class Play extends Phaser.Scene {
     
 }
 
-spawnBug3() {
-  // Calculate the Y position randomly within the game height
-  let y = Phaser.Math.Between(50, this.game.config.height - 50);
-  console.log('Bug3 spawned at Y:', y);
+  spawnBug3() {
+    // Calculate the Y position randomly within the game height
+    let y = Phaser.Math.Between(50, this.game.config.height - 50);
+    console.log('Bug3 spawned at Y:', y);
 
-  // Create bug3 at the far left edge of the screen with the random Y position
-  let bug3 = this.bugs.create(0, y, 'bug33');
+    // Create bug3 at the far left edge of the screen with the random Y position
+    let bug3 = this.bugs.create(0, y, 'bug3');
 
-  // Custom wavy movement using sine wave
-  this.tweens.add({
-      targets: bug3,
-      y: y + 50, // Adjust the amplitude of the wave
-      duration: 1000, // Duration of one wave cycle
-      repeat: -1, // Repeat indefinitely
-      yoyo: true, // Move back and forth
-      ease: 'Sine.easeInOut' // Use sine wave easing
-  });
-}
+    // Custom wavy movement using sine wave
+    this.tweens.add({
+        targets: bug3,
+        y: y + 50, // Adjust the amplitude of the wave
+        duration: 1000, // Duration of one wave cycle
+        repeat: -1, // Repeat indefinitely
+        yoyo: true, // Move back and forth
+        ease: 'Sine.easeInOut' // Use sine wave easing
+    });
+  }
 
   // Function to start spawning bug2
   startSpawningBug2() {   
     // Create a timer event for bug2 with the desired spawn interval
-    this.bug2TimerEvent = this.time.addEvent({ delay: 1200, callback: this.spawnBug2, callbackScope: this, loop: true });
+    this.bug2TimerEvent = this.time.addEvent({ delay: 2000, callback: this.spawnBug2, callbackScope: this, loop: true });
+  }
+
+  // Function to start spawning bug2
+  startSpawningBug3() {   
+    // Create a timer event for bug2 with the desired spawn interval
+    this.bug3TimerEvent = this.time.addEvent({ delay: 3000, callback: this.spawnBug3, callbackScope: this, loop: true });
   }
 
   // Called when a key is pressed
@@ -123,7 +127,7 @@ spawnBug3() {
     console.log(this.typedInput)
 
     // Check if the typed input ends with the correct keyword "if"
-    if (this.typedInput.endsWith(this.correctKeywords[0])) {
+    if (this.typedInput.endsWith('if')) {
       // Destroy the first bug in the group and update the score
       let bug = this.bugs.getFirstAlive();
       if (bug) {
@@ -133,9 +137,19 @@ spawnBug3() {
       }
       // Clear the typed input
       this.typedInput = '';
-    } else if (this.typedInput.endsWith(this.correctKeywords[1])) {
+    } else if (this.typedInput.endsWith('else')) {
       // Destroy the first bug in the group and update the score
       let bug = this.bugs2.getFirstAlive();
+      if (bug) {
+        bug.destroy();
+        this.score += 10; // Adjust the score as needed
+        this.scoreText.setText(`Score: ${this.score}`);
+      }
+      // Clear the typed input
+      this.typedInput = '';
+    } else if (this.typedInput.endsWith('hi')) {
+      // Destroy the first bug in the group and update the score
+      let bug = this.bugs3.getFirstAlive();
       if (bug) {
         bug.destroy();
         this.score += 10; // Adjust the score as needed
@@ -158,6 +172,13 @@ spawnBug3() {
 
     this.bugs2.children.iterate(bug2 => {
       if (bug2.x >= this.game.config.width) {
+        // Bug escaped! Switch to the "lose" scene
+        this.scene.start('lose');
+      }
+    });
+
+    this.bugs3.children.iterate(bug3 => {
+      if (bug3.x >= this.game.config.width) {
         // Bug escaped! Switch to the "lose" scene
         this.scene.start('lose');
       }
