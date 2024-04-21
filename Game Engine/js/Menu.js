@@ -1,6 +1,6 @@
 /**
-A  scene to display the introduction image which explains the game 
-to the player before switching to the "play" scene.
+A  scene to display the menu that displays the keywords related to each bug 
+before switching to the "Play" scene.
 */
 
 class Menu extends Phaser.Scene {

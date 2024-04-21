@@ -4,7 +4,7 @@ Paria Jafarian
 
 In this game, players take on the role of a bug exterminator tasked with eliminating pesky bugs infesting a computer program. 
 The bugs are represented by cartoon insects crawling around the code, and players must squash them before they cause havoc. 
-There are two types of bugs, one of which is slower than the other type.   
+There are three types of bugs and they each have a specific keyword that destroys them once it is typed.
 */
 
 "use strict";

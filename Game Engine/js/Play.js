@@ -19,23 +19,19 @@ class Play extends Phaser.Scene {
 
     // Create a group of bugs with some basic physics configuration
     this.bugs = this.physics.add.group({
-      // Image key 
       key: 'bug',
-      // Set the initial velocity of the bugs to move towards the right
       velocityX: 100
     });
+
     // Create a second group of bugs
     this.bugs2 = this.physics.add.group({
-      // Image key 
       key: 'bug2',
-      // Set the initial velocity of the bugs to move towards the right
       velocityX: 120
     });
+    
     // Create a third group of Bugs
     this.bugs3 = this.physics.add.group({
-      // Image key 
       key: 'bug3',
-      // Set the initial velocity of the bugs to move towards the right
       velocityX: 160
     });
 
@@ -135,11 +131,11 @@ class Play extends Phaser.Scene {
       // Destroy the first bug in the bugs group and update the score
       let bug = this.bugs.getFirstAlive();
       this.destroyBug(bug, 5);
-    } else if (this.typedInput.endsWith('else')) {
+    } else if (this.typedInput.endsWith('byte')) {
       // Destroy the first bug in the bugs2 group and update the score
       let bug = this.bugs2.getFirstAlive();
       this.destroyBug(bug, 10);
-    } else if (this.typedInput.endsWith('byte')) {
+    } else if (this.typedInput.endsWith('else')) {
       // Destroy the first bug in the bugs3 group and update the score
       let bug = this.bugs3.getFirstAlive();
       this.destroyBug(bug, 15);
@@ -170,7 +166,7 @@ class Play extends Phaser.Scene {
     bugs.children.iterate(bug => {
       if (bug.x >= this.game.config.width) {
         // Bug escaped! Switch to the "lose" scene
-        this.scene.start('lose');
+        this.scene.start('lose', { score: this.score });
       }
     });
   }
