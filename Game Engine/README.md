@@ -1,5 +1,7 @@
 **Bug Buster: The Code Cleaner**
 
+**Play the game here: https://003paria.github.io/cart263-2024/Game%20Engine/**
+
 **Framework:** This game is developed using the Phaser framework, a powerful JavaScript library for creating 2D games for the web. Phaser provides robust features for game development, including physics simulation, asset loading, and scene management, making it ideal for building arcade-style games like Bug Exterminator.
 
 **Inspiration:** Bug Buster draws inspiration from classic arcade games where players must eliminate pests before they cause chaos. Players take on the role of a bug exterminator tasked with squashing pesky bugs infesting a computer program. The game features cartoon insects crawling around the code, and players must swiftly squash them by typing the right keywords to earn points.
