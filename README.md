@@ -1,2 +1,2 @@
-# cart263-2024
-This is my course repository for CART 263
+# Winter-2024
+This is my a repository for winter 2024 projects.
